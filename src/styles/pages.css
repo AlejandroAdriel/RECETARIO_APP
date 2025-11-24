@@ -1,0 +1,163 @@
+/* src/styles/pages.css */
+
+/* ===== Inicio (Home) ===== */
+#home .board-header{
+  display:flex; justify-content:center; margin-bottom: 22px;
+}
+#home .searchbar{ max-width: 720px; width:100% }
+
+#home .filters{
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: var(--shadow-sm);
+}
+#home .filters h3{
+  display:flex; align-items:center; justify-content:space-between;
+  margin:0 0 8px 0; color: var(--coffee);
+}
+#home .filters .group{ margin: 12px 0; padding: 10px 0; border-top: 1px dashed rgba(0,0,0,.08) }
+#home .filters .group:first-of-type{ border-top:0; padding-top:0 }
+#home .filters label{ display:flex; align-items:center; gap:8px; margin:6px 0 }
+#home .filters input[type="checkbox"]{ width:16px; height:16px; accent-color: var(--primary) }
+@media (min-width: 921px){ #home .filters{ position: sticky; top: 96px } }
+
+/* ===== Detalle de Receta ===== */
+#recipe .hero{ display:grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items:start }
+@media (max-width: 920px){ #recipe .hero{ grid-template-columns: 1fr } }
+#recipe .hero .image{ border-radius: 18px; overflow:hidden }
+#recipe .hero .panel{ padding: 18px }
+
+/* ===== Favoritos ===== */
+#favorites .empty{ text-align:center; color: var(--muted); padding: 40px 0 }
+
+/* ===== Editor ===== */
+#editor .page-title{ margin-bottom: 10px }
+#editor .panel .panel-inner input,
+#editor .panel .panel-inner select,
+#editor .panel .panel-inner textarea{
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  background: #fff;
+}
+#editor .panel .panel-inner textarea{ resize: vertical }
+#editor .panel .panel-inner input:focus,
+#editor .panel .panel-inner select:focus,
+#editor .panel .panel-inner textarea:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15,78,119,.12);
+}
+
+/* Layout del editor: lista + formulario */
+#editor .editor-layout{
+  display:grid;
+  grid-template-columns: 1fr 440px;
+  gap: 24px;
+  align-items: flex-start;
+}
+@media (max-width: 960px){
+  #editor .editor-layout{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ítems de la lista del editor */
+#editor .editor-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:12px;
+}
+#editor .editor-list-item{
+  display:grid;
+  grid-template-columns: 64px 1fr auto;
+  gap:12px;
+  align-items:center;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 12px;
+  padding: 8px;
+  background:#fff;
+}
+#editor .editor-list-item img{
+  width:64px; height:48px;
+  object-fit:cover;
+  border-radius:8px;
+}
+#editor .editor-list-item-meta{
+  font-weight:800;
+  color: var(--coffee);
+}
+#editor .editor-list-item-meta small{
+  display:block;
+  color: var(--muted);
+  font-size:13px;
+  margin-top:2px;
+}
+#editor .editor-list-item-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+@media (max-width: 600px){
+  #editor .editor-list-item{
+    grid-template-columns: 64px 1fr;
+    grid-template-rows: auto auto;
+  }
+  #editor .editor-list-item-actions{
+    grid-column: 1 / -1;
+    justify-content:flex-end;
+  }
+}
+
+/* ===== Administración de recetas ===== */
+.admin-recipes-list{
+  display:grid;
+  gap:12px;
+}
+.admin-recipe-row{
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  background:#fff;
+}
+.admin-recipe-row-inner{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.admin-recipe-row-inner img{
+  width:64px;
+  height:64px;
+  object-fit:cover;
+  border-radius:8px;
+}
+.admin-recipe-row-main{
+  flex:1;
+}
+.admin-recipe-row-main strong{
+  display:block;
+}
+.admin-recipe-row-meta{
+  color: var(--muted);
+  font-size:13px;
+}
+.admin-recipe-row-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+@media (max-width: 640px){
+  .admin-recipe-row-inner{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .admin-recipe-row-actions{
+    width:100%;
+    justify-content:flex-end;
+  }
+}
