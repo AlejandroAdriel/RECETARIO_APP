@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/android-adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.superrecetario.app"
     },
     "web": {
       "favicon": "./assets/web-favicon.png"
