@@ -1,4 +1,4 @@
-// src/components/AdminRecipeForm.jsx
+
 import { useEffect, useMemo, useState } from "react";
 
 const DIFFICULTIES = ["fácil", "media", "difícil"];

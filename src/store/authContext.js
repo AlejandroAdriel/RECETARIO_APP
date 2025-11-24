@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Carga inicial desde SecureStore y validación
   useEffect(() => {
     async function loadInitialSession() {
       try {
@@ -26,7 +25,6 @@ export function AuthProvider({ children }) {
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && typeof parsed === "object" && parsed.user && parsed.token) {
-            // Validar token
             try {
               const res = await fetch(`${BASE_URL}/api/validate`, {
                 headers: { Authorization: `Bearer ${parsed.token}` },
@@ -37,9 +35,7 @@ export function AuthProvider({ children }) {
                 await SecureStore.deleteItemAsync(STORAGE_KEY);
               }
             } catch (e) {
-              // Si falla la validación (ej. red), mantenemos la sesión pero podríamos marcarla como "offline" o similar.
-              // Por simplicidad, si falla la red, asumimos válido por ahora o podríamos invalidar.
-              // Aquí optamos por mantener si es error de red, pero si el server responde 401, el res.ok será false.
+              // Keep session on network error for offline support
               console.warn("Validation failed or network error", e);
               setSession(parsed); 
             }
@@ -54,10 +50,9 @@ export function AuthProvider({ children }) {
     loadInitialSession();
   }, []);
 
-  // Sincroniza cambios de sesión con SecureStore
   useEffect(() => {
     async function syncSession() {
-      if (loading) return; // No sobrescribir durante la carga
+      if (loading) return;
       try {
         if (session) {
           await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(session));

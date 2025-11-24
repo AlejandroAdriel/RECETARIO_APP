@@ -54,12 +54,10 @@ export default function AppHeader() {
   const { pathname } = useLocation();
   const { role } = useContext(AuthContext) || {};
 
-  // Cerrar el menú móvil al cambiar de ruta
   useEffect(() => setOpen(false), [pathname]);
 
   const linkClass = ({ isActive }) => `nav-btn${isActive ? " active" : ""}`;
 
-  // Ítems de navegación (incluye Administración si el rol es admin)
   const navItems = [
     { path: "/", label: "Inicio", icon: Icon.Home, end: true },
     { path: "/favoritos", label: "Favoritos", icon: Icon.Heart },
@@ -82,7 +80,7 @@ export default function AppHeader() {
           <span className="brand-title">SUPER · RECETARIO</span>
         </Link>
 
-        {/* Navegación desktop */}
+
         <nav className="nav nav-desktop" aria-label="Principal">
           {navItems.map(({ path, label, icon: IconCmp, end }) => (
             <NavLink key={path} to={path} end={end} className={linkClass}>
@@ -91,7 +89,7 @@ export default function AppHeader() {
           ))}
         </nav>
 
-        {/* Botón hamburguesa (solo móvil, se controla por CSS) */}
+
         <button
           className="hamburger"
           aria-label="Abrir menú"
@@ -105,7 +103,7 @@ export default function AppHeader() {
         </button>
       </div>
 
-      {/* Menú móvil */}
+
       {open && (
         <div
           id="mobile-nav"

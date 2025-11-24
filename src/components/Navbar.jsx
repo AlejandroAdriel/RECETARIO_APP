@@ -1,7 +1,4 @@
-// src/components/Navbar.jsx
-// Componente legado: la navegación principal ahora vive en AppHeader.jsx.
-// Se deja este componente vacío para no romper imports antiguos y evitar
-// que se duplique el menú en pantalla.
+// Legacy component: navigation is now in AppHeader.jsx. Kept to avoid breaking imports.
 
 export default function Navbar() {
   return null;
