@@ -1,10 +1,37 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
-import { useLocalSearchParams, Stack } from "expo-router";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { getRecipeById } from "../../src/services/api";
 import Comments from "../../src/components/Comments";
-import { COLORS, SIZES } from "../../src/constants/theme";
+import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
+
+// Colores para los chips de restricciones (mismo criterio que en las tarjetas)
+const getTagColors = (tag) => {
+  const key = (tag || "").toLowerCase().trim();
+
+  if (key.includes("vegano") || key.includes("vegan")) {
+    return { bg: "#E8F5E9", text: "#2E7D32", border: "#A5D6A7" };
+  }
+  if (key.includes("vegetar")) {
+    return { bg: "#FFFDE7", text: "#F9A825", border: "#FFF59D" };
+  }
+  if (key.includes("gluten")) {
+    return { bg: "#E3F2FD", text: "#1565C0", border: "#90CAF9" };
+  }
+  if (key.includes("lactosa") || key.includes("dairy")) {
+    return { bg: "#FCE4EC", text: "#AD1457", border: "#F48FB1" };
+  }
+
+  return { bg: COLORS.bg, text: COLORS.muted, border: COLORS.honey };
+};
 
 export default function RecipeDetail() {
   const { id } = useLocalSearchParams();
@@ -26,172 +53,343 @@ export default function RecipeDetail() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingText}>Cargando...</Text>
-      </View>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={COLORS.secondary} />
+          <Text style={styles.loadingText}>Cargando…</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (!receta) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>Receta no encontrada</Text>
-      </View>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.center}>
+          <Text style={styles.errorText}>Receta no encontrada</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
+  const restrictions = Array.isArray(receta.restrictions)
+    ? receta.restrictions
+    : [];
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Stack.Screen options={{ title: receta.name, headerTintColor: COLORS.coffee }} />
-      
-      <Image
-        source={{ uri: receta.image }}
-        style={styles.image}
-        contentFit="cover"
-        transition={500}
-      />
-
-      <View style={styles.panel}>
-        <Text style={styles.title}>{receta.name}</Text>
-
-        <View style={styles.metaContainer}>
-          <Text style={styles.metaItem}><Text style={styles.bold}>Tiempo:</Text> {receta.cookTime} min</Text>
-          <Text style={styles.metaItem}><Text style={styles.bold}>Porciones:</Text> {receta.servings}</Text>
-          <Text style={styles.metaItem}><Text style={styles.bold}>Dificultad:</Text> {receta.difficulty}</Text>
-          <Text style={styles.metaItem}><Text style={styles.bold}>Tipo:</Text> {receta.category}</Text>
+    <SafeAreaView style={styles.safe}>
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={styles.screenContent}
+      >
+        {/* Encabezado tipo mockup: SUPER • RECETARIO */}
+        <View style={styles.headerContainer}>
+          <Text style={styles.appTitle}>SUPER • RECETARIO</Text>
         </View>
 
-        <Text style={styles.descriptionLabel}>Descripción:</Text>
-        <Text style={styles.description}>{receta.description}</Text>
+        {/* Tarjeta principal con la receta */}
+        <View style={styles.card}>
+          {/* Imagen */}
+          <View style={styles.imageWrapper}>
+            <Image
+              source={{ uri: receta.image }}
+              style={styles.image}
+              contentFit="cover"
+              transition={500}
+            />
+          </View>
 
-        <Text style={styles.sectionTitle}>Ingredientes</Text>
-        <View style={styles.list}>
-          {receta.ingredients?.map((i, idx) => (
-            <View key={idx} style={styles.listItem}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={styles.listText}>{i}</Text>
+          {/* Panel beige */}
+          <View style={styles.body}>
+            {/* Título */}
+            <View style={styles.titleRow}>
+              <Text style={styles.title} numberOfLines={2}>
+                {receta.name}
+              </Text>
             </View>
-          ))}
-        </View>
 
-        <Text style={styles.sectionTitle}>Preparación</Text>
-        <View style={styles.list}>
-          {receta.instructions?.map((p, idx) => (
-            <View key={idx} style={styles.listItem}>
-              <Text style={styles.number}>{idx + 1}.</Text>
-              <Text style={styles.listText}>{p}</Text>
+            {/* Meta: duración, dificultad, tipo, porciones */}
+            <View style={styles.metaGrid}>
+              <View style={styles.metaColumn}>
+                <Text style={styles.metaLabel}>Duración</Text>
+                <Text style={styles.metaValue}>{receta.cookTime} min</Text>
+              </View>
+              <View style={styles.metaColumn}>
+                <Text style={styles.metaLabel}>Dificultad</Text>
+                <Text style={styles.metaValue}>{receta.difficulty}</Text>
+              </View>
+              <View style={styles.metaColumn}>
+                <Text style={styles.metaLabel}>Tipo</Text>
+                <Text style={styles.metaValue}>{receta.category}</Text>
+              </View>
+              <View style={styles.metaColumn}>
+                <Text style={styles.metaLabel}>Porciones</Text>
+                <Text style={styles.metaValue}>{receta.servings}</Text>
+              </View>
             </View>
-          ))}
-        </View>
-      </View>
 
-      <Comments recipeId={id} />
-    </ScrollView>
+            {/* Descripción */}
+            {receta.description ? (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Descripción</Text>
+                <Text style={styles.description}>{receta.description}</Text>
+              </View>
+            ) : null}
+
+            {/* Chips de restricciones */}
+            {restrictions.length > 0 && (
+              <View style={[styles.section, styles.tagsSection]}>
+                <Text style={[styles.sectionTitle, { marginBottom: 4 }]}>
+                  Etiquetas
+                </Text>
+                <View style={styles.tagsContainer}>
+                  {restrictions.map((tag, index) => {
+                    const { bg, text, border } = getTagColors(tag);
+                    return (
+                      <View
+                        key={`${tag}-${index}`}
+                        style={[
+                          styles.tag,
+                          {
+                            backgroundColor: bg,
+                            borderColor: border,
+                          },
+                        ]}
+                      >
+                        <Text style={[styles.tagText, { color: text }]}>
+                          {tag}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
+            {/* Ingredientes */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Ingredientes</Text>
+              {Array.isArray(receta.ingredients) &&
+              receta.ingredients.length > 0 ? (
+                <View style={styles.list}>
+                  {receta.ingredients.map((item, index) => (
+                    <View key={index} style={styles.listItem}>
+                      <Text style={styles.bullet}>▢</Text>
+                      <Text style={styles.listText}>{item}</Text>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.emptyText}>
+                  No se registraron ingredientes.
+                </Text>
+              )}
+            </View>
+
+            {/* Instrucciones */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Instrucciones</Text>
+              {Array.isArray(receta.instructions) &&
+              receta.instructions.length > 0 ? (
+                <View style={styles.list}>
+                  {receta.instructions.map((step, index) => (
+                    <View key={index} style={styles.listItem}>
+                      <Text style={styles.stepNumber}>{index + 1}.</Text>
+                      <Text style={styles.listText}>{step}</Text>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.emptyText}>
+                  No se registraron instrucciones.
+                </Text>
+              )}
+            </View>
+          </View>
+        </View>
+
+        {/* Comentarios (con espacio inferior extra para que no los tape el tab bar) */}
+        <View style={styles.commentsWrapper}>
+          <Comments recipeId={id} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safe: {
     flex: 1,
-    backgroundColor: COLORS.bg,
+    backgroundColor: COLORS.seaBlue,
   },
-  content: {
-    padding: 16,
-    paddingBottom: 40,
+  screen: {
+    flex: 1,
+    backgroundColor: COLORS.seaBlue,
   },
+  screenContent: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    // MUY importante para que el tab bar NO tape los comentarios
+    paddingBottom: 140,
+  },
+
   center: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.bg,
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
-    marginTop: 16,
-    color: COLORS.muted,
+    marginTop: 12,
+    color: COLORS.paper,
   },
   errorText: {
-    fontSize: 18,
-    color: COLORS.danger,
+    fontSize: 16,
+    color: COLORS.paper,
+    fontWeight: "600",
+  },
+
+  // Encabezado SUPER • RECETARIO (igual que en el home)
+  headerContainer: {
+    marginBottom: 16,
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    textTransform: "uppercase",
+    letterSpacing: 1.8,
+    color: COLORS.text,
+    backgroundColor: COLORS.honey,
+    paddingVertical: 12,
+    borderRadius: 26,
+    overflow: "hidden",
+    marginBottom: 4,
+  },
+
+  // Tarjeta de receta
+  card: {
+    backgroundColor: COLORS.paper,
+    borderRadius: SIZES.radiusLg,
+    overflow: "hidden",
+    ...SHADOWS.default,
+  },
+  imageWrapper: {
+    backgroundColor: COLORS.secondary,
   },
   image: {
-    width: '100%',
-    height: 250,
-    borderRadius: SIZES.radiusLg,
-    marginBottom: 20,
+    width: "100%",
+    height: 230,
   },
-  panel: {
-    backgroundColor: COLORS.paper,
-    borderRadius: SIZES.radius,
-    padding: 20,
+  body: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    flex: 1,
+    fontSize: 22,
+    fontWeight: "700",
     color: COLORS.coffee,
-    marginBottom: 16,
-    textAlign: 'center',
   },
-  metaContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 16,
-    paddingBottom: 16,
+
+  metaGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomColor: "rgba(0,0,0,0.06)",
+    paddingBottom: 10,
+    marginBottom: 12,
   },
-  metaItem: {
+  metaColumn: {
+    width: "48%",
+    marginBottom: 6,
+  },
+  metaLabel: {
+    fontSize: 12,
+    color: COLORS.muted,
+  },
+  metaValue: {
     fontSize: 14,
+    fontWeight: "600",
     color: COLORS.ink,
   },
-  bold: {
-    fontWeight: 'bold',
+
+  section: {
+    marginBottom: 16,
   },
-  descriptionLabel: {
-    fontWeight: 'bold',
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: "700",
     color: COLORS.coffee,
     marginBottom: 4,
   },
   description: {
-    fontSize: 15,
+    fontSize: 14,
+    lineHeight: 20,
     color: COLORS.ink,
-    lineHeight: 22,
-    marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.coffee,
-    marginTop: 8,
-    marginBottom: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.honey,
-    alignSelf: 'flex-start',
+  emptyText: {
+    fontSize: 13,
+    color: COLORS.muted,
+    fontStyle: "italic",
   },
+
   list: {
-    gap: 8,
-    marginBottom: 16,
+    gap: 6,
   },
   listItem: {
-    flexDirection: 'row',
-    gap: 8,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    columnGap: 8,
   },
   bullet: {
     fontSize: 16,
-    color: COLORS.primary,
-    fontWeight: 'bold',
+    marginTop: 1,
+    color: COLORS.accent,
   },
-  number: {
-    fontSize: 15,
-    fontWeight: 'bold',
+  stepNumber: {
+    fontSize: 14,
+    fontWeight: "700",
     color: COLORS.primary,
     minWidth: 20,
+    textAlign: "right",
+    marginTop: 1,
   },
   listText: {
-    fontSize: 15,
-    color: COLORS.ink,
     flex: 1,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
+    color: COLORS.ink,
+  },
+
+  // Chips de restricciones
+  tagsSection: {
+    marginBottom: 20,
+  },
+  tagsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  commentsWrapper: {
+    marginTop: 24,
   },
 });

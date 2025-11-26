@@ -2,12 +2,58 @@ import { useState, useContext } from "react";
 import { View, Text, Pressable, StyleSheet, Alert, Linking } from "react-native";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../store/authContext";
 import { addFavorite, removeFavorite } from "../services/api";
 import { COLORS, SIZES, SHADOWS } from "../constants/theme";
 
 const capitalize = (s) =>
   typeof s === "string" && s.length ? s[0].toUpperCase() + s.slice(1) : s;
+
+// Colores por tipo de restricción
+const getTagColors = (tag) => {
+  const key = (tag || "").toLowerCase().trim();
+
+  // Puedes ajustar estos nombres según cómo vengan desde el backend
+  if (key.includes("vegano") || key.includes("vegan")) {
+    return {
+      bg: "#E8F5E9",
+      text: "#2E7D32",
+      border: "#A5D6A7",
+    };
+  }
+
+  if (key.includes("vegetar")) {
+    return {
+      bg: "#FFF3E0",
+      text: "#EF6C00",
+      border: "#FFCC80",
+    };
+  }
+
+  if (key.includes("gluten")) {
+    return {
+      bg: "#E3F2FD",
+      text: "#1565C0",
+      border: "#90CAF9",
+    };
+  }
+
+  if (key.includes("lactosa") || key.includes("dairy")) {
+    return {
+      bg: "#FCE4EC",
+      text: "#AD1457",
+      border: "#F48FB1",
+    };
+  }
+
+  // Por defecto
+  return {
+    bg: COLORS.bg,
+    text: COLORS.muted,
+    border: COLORS.honey,
+  };
+};
 
 export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
   const { user } = useContext(AuthContext);
@@ -36,7 +82,10 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
   };
 
   const handleDownloadRDF = async () => {
-    const url = `${process.env.EXPO_PUBLIC_API_BASE || "https://recetario-app-backend.onrender.com"}/rdf/${receta.id}`;
+    const url = `${
+      process.env.EXPO_PUBLIC_API_BASE ||
+      "https://recetario-app-backend.onrender.com"
+    }/rdf/${receta.id}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -47,53 +96,81 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
 
   return (
     <View style={styles.card}>
-      <Link href={`/receta/${receta.id}`} asChild>
-        <Pressable>
-          <Image
-            source={{ uri: receta.image }}
-            style={styles.image}
-            contentFit="cover"
+      {/* Imagen + icono de favorito */}
+      <View style={styles.imageWrapper}>
+        <Link href={`/receta/${receta.id}`} asChild>
+          <Pressable>
+            <Image
+              source={{ uri: receta.image }}
+              style={styles.image}
+              contentFit="cover"
+            />
+          </Pressable>
+        </Link>
+
+        <Pressable style={styles.favoriteIcon} onPress={handleFav}>
+          <Ionicons
+            name={isFav ? "heart" : "heart-outline"}
+            size={22}
+            color={isFav ? COLORS.primary : COLORS.ink}
           />
         </Pressable>
-      </Link>
+      </View>
+
+      {/* Contenido */}
       <View style={styles.content}>
         <Link href={`/receta/${receta.id}`} asChild>
           <Pressable>
-            <Text style={styles.title}>{receta.name}</Text>
+            <Text style={styles.title} numberOfLines={1}>
+              {receta.name}
+            </Text>
           </Pressable>
         </Link>
+
         <Text style={styles.text}>
           <Text style={styles.bold}>Tiempo:</Text> {receta.cookTime} min
         </Text>
+
         <Text style={styles.text}>
-          <Text style={styles.bold}>Dificultad:</Text> {capitalize(receta.difficulty)}
+          <Text style={styles.bold}>Dificultad:</Text>{" "}
+          {capitalize(receta.difficulty)}
         </Text>
+
         <Text style={styles.text}>
           <Text style={styles.bold}>Tipo:</Text> {receta.category}
         </Text>
-        
+
         {receta.restrictions?.length > 0 && (
           <View style={styles.tagsContainer}>
             <Text style={[styles.text, styles.bold]}>Etiquetas:</Text>
-            {receta.restrictions.map((tag, idx) => (
-              <View key={idx} style={styles.tag}>
-                <Text style={styles.tagText}>{capitalize(tag)}</Text>
-              </View>
-            ))}
+            {receta.restrictions.map((tag, idx) => {
+              const { bg, text, border } = getTagColors(tag);
+              return (
+                <View
+                  key={idx}
+                  style={[
+                    styles.tag,
+                    { backgroundColor: bg, borderColor: border },
+                  ]}
+                >
+                  <Text style={[styles.tagText, { color: text }]}>
+                    {capitalize(tag)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         )}
 
+        {/* Botón RDF (solo texto, sin botón de favorito extra) */}
         <View style={styles.actions}>
-          <Pressable 
-            style={[styles.btn, isFav ? styles.btnOutline : styles.btnPrimary]} 
-            onPress={handleFav}
+          <Pressable
+            style={[styles.btn, styles.btnOutline]}
+            onPress={handleDownloadRDF}
           >
-            <Text style={[styles.btnText, isFav ? styles.btnOutlineText : styles.btnPrimaryText]}>
-              {isFav ? "Quitar de Favoritos" : "Favorito"}
+            <Text style={[styles.btnText, styles.btnOutlineText]}>
+              Descargar RDF
             </Text>
-          </Pressable>
-          <Pressable style={[styles.btn, styles.btnOutline]} onPress={handleDownloadRDF}>
-            <Text style={[styles.btnText, styles.btnOutlineText]}>Descargar RDF</Text>
           </Pressable>
         </View>
       </View>
@@ -105,77 +182,80 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.paper,
     borderRadius: SIZES.radius,
-    marginBottom: 20,
-    overflow: 'hidden',
+    marginBottom: 16,
+    overflow: "hidden",
     ...SHADOWS.sm,
   },
+  imageWrapper: {
+    position: "relative",
+  },
   image: {
-    width: '100%',
-    height: 200,
+    width: "100%",
+    height: 160, // ajusta si quieres la card más o menos alta
+  },
+  favoriteIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "rgba(255,255,255,0.9)",
+    borderRadius: 999,
+    padding: 6,
+    ...SHADOWS.sm,
   },
   content: {
-    padding: 16,
+    padding: 12,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "bold",
     color: COLORS.coffee,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   text: {
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.ink,
-    marginBottom: 4,
+    marginBottom: 3,
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     marginTop: 4,
-    gap: 8,
+    gap: 6,
   },
   tag: {
-    backgroundColor: COLORS.bg,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: COLORS.honey,
   },
   tagText: {
-    fontSize: 12,
-    color: COLORS.muted,
+    fontSize: 11,
   },
   actions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
-    marginTop: 16,
+    marginTop: 10,
   },
   btn: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnPrimary: {
-    backgroundColor: COLORS.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   btnOutline: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
   btnText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  btnPrimaryText: {
-    color: '#fff',
+    fontSize: 13,
+    fontWeight: "600",
   },
   btnOutlineText: {
     color: COLORS.primary,
