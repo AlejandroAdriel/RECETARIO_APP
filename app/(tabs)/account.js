@@ -513,6 +513,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
 
+  
   label: {
     fontWeight: "600",
     color: COLORS.textLight,
