@@ -1,8 +1,10 @@
 // src/components/SearchBar.js
 import React, { useState } from "react";
 import { View, TextInput, Pressable, StyleSheet } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 export default function SearchBar({
   value,
@@ -13,42 +15,48 @@ export default function SearchBar({
 }) {
   const [local, setLocal] = useState(value || "");
 
+  const containerBg = useThemeColor({}, "cardBackground");
+  const textColor = useThemeColor({}, "text");
+  const iconColor = useThemeColor({}, "text"); // Or muted
+  const filterBtnBg = useThemeColor({}, "tint");
+  const filterIconColor = useThemeColor({}, "background");
+
   const handleSubmit = () => {
     onSubmit?.(local);
   };
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: containerBg }]}>
         <Ionicons
           name="search"
           size={20}
-          color={COLORS.muted}
+          color={iconColor}
           style={styles.leftIcon}
         />
 
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: textColor }]}
           value={local}
           onChangeText={(t) => {
             setLocal(t);
             onChange?.(t);
           }}
           placeholder={placeholder}
-          placeholderTextColor={COLORS.muted}
+          placeholderTextColor={iconColor}
           returnKeyType="search"
           onSubmitEditing={handleSubmit}
         />
 
         <Pressable
-          style={styles.filterBtn}
+          style={[styles.filterBtn, { backgroundColor: filterBtnBg }]}
           onPress={onFiltersPress}
           disabled={!onFiltersPress}
         >
           <Ionicons
             name="options-outline"
             size={20}
-            color={COLORS.honey} // ICONO BEIGE
+            color={filterIconColor} // ICONO BEIGE
           />
         </Pressable>
       </View>
@@ -63,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: COLORS.cream,
+    // backgroundColor: COLORS.cream, // Removed static color
     borderRadius: 24,
     paddingHorizontal: 12,
     height: 44,
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 14,
-    color: COLORS.text,
+    // color: COLORS.text, // Removed static color
   },
   filterBtn: {
     width: 32,
@@ -82,6 +90,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.seaBlue, // BOTÓN AZUL
+    // backgroundColor: COLORS.seaBlue, // BOTÓN AZUL // Removed static color
   },
 });

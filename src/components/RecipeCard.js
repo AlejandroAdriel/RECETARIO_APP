@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../store/authContext";
 import { addFavorite, removeFavorite } from "../services/api";
 import { COLORS, SIZES, SHADOWS } from "../constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const capitalize = (s) =>
   typeof s === "string" && s.length ? s[0].toUpperCase() + s.slice(1) : s;
@@ -59,6 +60,11 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
   const { user } = useContext(AuthContext);
   const [isFav, setIsFav] = useState(initialFav);
 
+  const cardBg = useThemeColor({}, "cardBackground");
+  const textColor = useThemeColor({}, "text");
+  const tintColor = useThemeColor({}, "tint");
+  const borderColor = useThemeColor({}, "borderColor");
+
   const handleFav = async () => {
     if (!user) {
       Alert.alert("Atención", "Debes iniciar sesión para usar favoritos");
@@ -95,7 +101,7 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
   };
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: cardBg }]}>
       {/* Imagen + icono de favorito */}
       <View style={styles.imageWrapper}>
         <Link href={`/receta/${receta.id}`} asChild>
@@ -112,7 +118,7 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
           <Ionicons
             name={isFav ? "heart" : "heart-outline"}
             size={22}
-            color={isFav ? COLORS.primary : COLORS.ink}
+            color={isFav ? tintColor : textColor}
           />
         </Pressable>
       </View>
@@ -121,28 +127,28 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
       <View style={styles.content}>
         <Link href={`/receta/${receta.id}`} asChild>
           <Pressable>
-            <Text style={styles.title} numberOfLines={1}>
+            <Text style={[styles.title, { color: textColor }]} numberOfLines={1}>
               {receta.name}
             </Text>
           </Pressable>
         </Link>
 
-        <Text style={styles.text}>
+        <Text style={[styles.text, { color: textColor }]}>
           <Text style={styles.bold}>Tiempo:</Text> {receta.cookTime} min
         </Text>
 
-        <Text style={styles.text}>
+        <Text style={[styles.text, { color: textColor }]}>
           <Text style={styles.bold}>Dificultad:</Text>{" "}
           {capitalize(receta.difficulty)}
         </Text>
 
-        <Text style={styles.text}>
+        <Text style={[styles.text, { color: textColor }]}>
           <Text style={styles.bold}>Tipo:</Text> {receta.category}
         </Text>
 
         {receta.restrictions?.length > 0 && (
           <View style={styles.tagsContainer}>
-            <Text style={[styles.text, styles.bold]}>Etiquetas:</Text>
+            <Text style={[styles.text, styles.bold, { color: textColor }]}>Etiquetas:</Text>
             {receta.restrictions.map((tag, idx) => {
               const { bg, text, border } = getTagColors(tag);
               return (
@@ -165,10 +171,10 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
         {/* Botón RDF (solo texto, sin botón de favorito extra) */}
         <View style={styles.actions}>
           <Pressable
-            style={[styles.btn, styles.btnOutline]}
+            style={[styles.btn, styles.btnOutline, { borderColor: tintColor }]}
             onPress={handleDownloadRDF}
           >
-            <Text style={[styles.btnText, styles.btnOutlineText]}>
+            <Text style={[styles.btnText, styles.btnOutlineText, { color: tintColor }]}>
               Descargar RDF
             </Text>
           </Pressable>
@@ -180,7 +186,7 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: COLORS.paper,
+    // backgroundColor: COLORS.paper, // Removed static color
     borderRadius: SIZES.radius,
     marginBottom: 16,
     overflow: "hidden",
@@ -208,12 +214,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
     marginBottom: 6,
   },
   text: {
     fontSize: 13,
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
     marginBottom: 3,
   },
   bold: {
@@ -251,13 +257,13 @@ const styles = StyleSheet.create({
   btnOutline: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    // borderColor: COLORS.primary, // Removed static color
   },
   btnText: {
     fontSize: 13,
     fontWeight: "600",
   },
   btnOutlineText: {
-    color: COLORS.primary,
+    // color: COLORS.primary, // Removed static color
   },
 });

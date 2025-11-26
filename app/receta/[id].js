@@ -12,6 +12,7 @@ import { Image } from "expo-image";
 import { getRecipeById } from "../../src/services/api";
 import Comments from "../../src/components/Comments";
 import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 // Colores para los chips de restricciones (mismo criterio que en las tarjetas)
 const getTagColors = (tag) => {
@@ -38,6 +39,18 @@ export default function RecipeDetail() {
   const [receta, setReceta] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const backgroundColor = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "cardBackground");
+  const textColor = useThemeColor({}, "text");
+  const headerBg = useThemeColor({}, "headerBackground");
+  const headerText = useThemeColor({}, "headerText");
+  const sectionTitleColor = useThemeColor({}, "sectionTitle");
+  const metaLabelColor = useThemeColor({}, "text"); // or muted
+  const metaValueColor = useThemeColor({}, "text");
+  const descriptionColor = useThemeColor({}, "text");
+  const listTextColor = useThemeColor({}, "text");
+  const emptyTextColor = useThemeColor({}, "text");
+
   useEffect(() => {
     (async () => {
       try {
@@ -53,7 +66,7 @@ export default function RecipeDetail() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={[styles.safe, { backgroundColor }]}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color={COLORS.secondary} />
           <Text style={styles.loadingText}>Cargando…</Text>
@@ -64,7 +77,7 @@ export default function RecipeDetail() {
 
   if (!receta) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={[styles.safe, { backgroundColor }]}>
         <View style={styles.center}>
           <Text style={styles.errorText}>Receta no encontrada</Text>
         </View>
@@ -77,18 +90,18 @@ export default function RecipeDetail() {
     : [];
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor }]}>
       <ScrollView
-        style={styles.screen}
+        style={[styles.screen, { backgroundColor }]}
         contentContainerStyle={styles.screenContent}
       >
         {/* Encabezado tipo mockup: SUPER • RECETARIO */}
         <View style={styles.headerContainer}>
-          <Text style={styles.appTitle}>SUPER • RECETARIO</Text>
+          <Text style={[styles.appTitle, { backgroundColor: headerBg, color: headerText }]}>SUPER • RECETARIO</Text>
         </View>
 
         {/* Tarjeta principal con la receta */}
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: cardBg }]}>
           {/* Imagen */}
           <View style={styles.imageWrapper}>
             <Image
@@ -103,7 +116,7 @@ export default function RecipeDetail() {
           <View style={styles.body}>
             {/* Título */}
             <View style={styles.titleRow}>
-              <Text style={styles.title} numberOfLines={2}>
+              <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
                 {receta.name}
               </Text>
             </View>
@@ -111,35 +124,35 @@ export default function RecipeDetail() {
             {/* Meta: duración, dificultad, tipo, porciones */}
             <View style={styles.metaGrid}>
               <View style={styles.metaColumn}>
-                <Text style={styles.metaLabel}>Duración</Text>
-                <Text style={styles.metaValue}>{receta.cookTime} min</Text>
+                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Duración</Text>
+                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.cookTime} min</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={styles.metaLabel}>Dificultad</Text>
-                <Text style={styles.metaValue}>{receta.difficulty}</Text>
+                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Dificultad</Text>
+                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.difficulty}</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={styles.metaLabel}>Tipo</Text>
-                <Text style={styles.metaValue}>{receta.category}</Text>
+                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Tipo</Text>
+                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.category}</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={styles.metaLabel}>Porciones</Text>
-                <Text style={styles.metaValue}>{receta.servings}</Text>
+                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Porciones</Text>
+                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.servings}</Text>
               </View>
             </View>
 
             {/* Descripción */}
             {receta.description ? (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Descripción</Text>
-                <Text style={styles.description}>{receta.description}</Text>
+                <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Descripción</Text>
+                <Text style={[styles.description, { color: descriptionColor }]}>{receta.description}</Text>
               </View>
             ) : null}
 
             {/* Chips de restricciones */}
             {restrictions.length > 0 && (
               <View style={[styles.section, styles.tagsSection]}>
-                <Text style={[styles.sectionTitle, { marginBottom: 4 }]}>
+                <Text style={[styles.sectionTitle, { marginBottom: 4, color: sectionTitleColor }]}>
                   Etiquetas
                 </Text>
                 <View style={styles.tagsContainer}>
@@ -168,19 +181,19 @@ export default function RecipeDetail() {
 
             {/* Ingredientes */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Ingredientes</Text>
+              <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Ingredientes</Text>
               {Array.isArray(receta.ingredients) &&
               receta.ingredients.length > 0 ? (
                 <View style={styles.list}>
                   {receta.ingredients.map((item, index) => (
                     <View key={index} style={styles.listItem}>
                       <Text style={styles.bullet}>▢</Text>
-                      <Text style={styles.listText}>{item}</Text>
+                      <Text style={[styles.listText, { color: listTextColor }]}>{item}</Text>
                     </View>
                   ))}
                 </View>
               ) : (
-                <Text style={styles.emptyText}>
+                <Text style={[styles.emptyText, { color: emptyTextColor }]}>
                   No se registraron ingredientes.
                 </Text>
               )}
@@ -188,19 +201,19 @@ export default function RecipeDetail() {
 
             {/* Instrucciones */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Instrucciones</Text>
+              <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Instrucciones</Text>
               {Array.isArray(receta.instructions) &&
               receta.instructions.length > 0 ? (
                 <View style={styles.list}>
                   {receta.instructions.map((step, index) => (
                     <View key={index} style={styles.listItem}>
                       <Text style={styles.stepNumber}>{index + 1}.</Text>
-                      <Text style={styles.listText}>{step}</Text>
+                      <Text style={[styles.listText, { color: listTextColor }]}>{step}</Text>
                     </View>
                   ))}
                 </View>
               ) : (
-                <Text style={styles.emptyText}>
+                <Text style={[styles.emptyText, { color: emptyTextColor }]}>
                   No se registraron instrucciones.
                 </Text>
               )}
@@ -220,11 +233,11 @@ export default function RecipeDetail() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: COLORS.seaBlue,
+    // backgroundColor: COLORS.seaBlue, // Removed static color
   },
   screen: {
     flex: 1,
-    backgroundColor: COLORS.seaBlue,
+    // backgroundColor: COLORS.seaBlue, // Removed static color
   },
   screenContent: {
     paddingHorizontal: 16,
@@ -258,8 +271,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textTransform: "uppercase",
     letterSpacing: 1.8,
-    color: COLORS.text,
-    backgroundColor: COLORS.honey,
+    // color: COLORS.text, // Removed static color
+    // backgroundColor: COLORS.honey, // Removed static color
     paddingVertical: 12,
     borderRadius: 26,
     overflow: "hidden",
@@ -268,7 +281,7 @@ const styles = StyleSheet.create({
 
   // Tarjeta de receta
   card: {
-    backgroundColor: COLORS.paper,
+    // backgroundColor: COLORS.paper, // Removed static color
     borderRadius: SIZES.radiusLg,
     overflow: "hidden",
     ...SHADOWS.default,
@@ -295,7 +308,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 22,
     fontWeight: "700",
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
   },
 
   metaGrid: {
@@ -313,12 +326,12 @@ const styles = StyleSheet.create({
   },
   metaLabel: {
     fontSize: 12,
-    color: COLORS.muted,
+    // color: COLORS.muted, // Removed static color
   },
   metaValue: {
     fontSize: 14,
     fontWeight: "600",
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
   },
 
   section: {
@@ -327,17 +340,17 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
     lineHeight: 20,
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
   },
   emptyText: {
     fontSize: 13,
-    color: COLORS.muted,
+    // color: COLORS.muted, // Removed static color
     fontStyle: "italic",
   },
 

@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   useWindowDimensions,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
@@ -15,7 +16,10 @@ import Filters from "../../src/components/Filters";
 import RecipeCard from "../../src/components/RecipeCard";
 import { getRecipes, getUserFavorites } from "../../src/services/api";
 import { AuthContext } from "../../src/store/authContext";
+import { useTheme } from "../../src/store/themeContext";
 import { COLORS } from "../../src/constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Home() {
   const [recipes, setRecipes] = useState([]);
@@ -24,7 +28,14 @@ export default function Home() {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const backgroundColor = useThemeColor({}, "background");
+  const headerBg = useThemeColor({}, "headerBackground");
+  const headerText = useThemeColor({}, "headerText");
+  const filterPanelBg = useThemeColor({}, "cardBackground");
+  const emptyTextColor = useThemeColor({}, "text");
+
   const { user, token } = useContext(AuthContext);
+  const { theme, toggleTheme } = useTheme();
   const [favIds, setFavIds] = useState([]);
 
   const { width } = useWindowDimensions();
@@ -126,7 +137,7 @@ export default function Home() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <FlatList
@@ -154,7 +165,16 @@ export default function Home() {
         }
         ListHeaderComponent={
           <View style={styles.headerContainer}>
-            <Text style={styles.appTitle}>SUPER • RECETARIO</Text>
+            <View style={[styles.headerRow, { backgroundColor: headerBg }]}>
+              <Text style={[styles.appTitle, { color: headerText }]}>SUPER • RECETARIO</Text>
+              <Pressable onPress={toggleTheme} style={styles.themeBtn}>
+                <Ionicons 
+                  name={theme === 'dark' ? "sunny" : "moon"} 
+                  size={24} 
+                  color={headerText} 
+                />
+              </Pressable>
+            </View>
 
             <SearchBar
               value={query}
@@ -165,7 +185,7 @@ export default function Home() {
             />
 
             {showFilters && (
-              <View style={styles.filterPanel}>
+              <View style={[styles.filterPanel, { backgroundColor: filterPanelBg }]}>
                 <Filters value={filters} onChange={setFilters} />
               </View>
             )}
@@ -181,7 +201,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.seaBlue,
+    // backgroundColor: COLORS.seaBlue, // Removed static color
   },
   listContent: {
     padding: 16,
@@ -190,23 +210,30 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginBottom: 16,
   },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // backgroundColor: COLORS.honey, // Removed static color
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 26,
+    marginBottom: 14,
+  },
   appTitle: {
-    fontSize: 24,
+    fontSize: 20, // Reduced slightly to fit button
     fontWeight: "bold",
-    textAlign: "center",
     textTransform: "uppercase",
     letterSpacing: 1.8,
-    color: COLORS.text,
-    backgroundColor: COLORS.honey,
-    paddingVertical: 12,
-    borderRadius: 26,
-    overflow: "hidden",
-    marginBottom: 14,
+    // color: COLORS.text, // Removed static color
+  },
+  themeBtn: {
+    padding: 4,
   },
 
   // 🔥 NUEVA TARJETA DE FILTROS (MUY PARECIDA AL MOCKUP)
   filterPanel: {
-    backgroundColor: COLORS.cream,       // beige sólido elegante
+    // backgroundColor: COLORS.cream,       // Removed static color
     paddingVertical: 16,
     paddingHorizontal: 18,
     borderRadius: 22,

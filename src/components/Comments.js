@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, StyleSheet, Alert, ActivityIndicator 
 import { AuthContext } from "../store/authContext";
 import { getComments, addComment, deleteComment } from "../services/api";
 import { COLORS, SIZES } from "../constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 export default function Comments({ recipeId }) {
   const { user } = useContext(AuthContext);
@@ -13,6 +14,20 @@ export default function Comments({ recipeId }) {
   const [content, setContent] = useState("");
   const [posting, setPosting] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+
+  const containerBg = useThemeColor({}, "cardBackground");
+  const headerColor = useThemeColor({}, "text");
+  const labelColor = useThemeColor({}, "text");
+  const inputBg = useThemeColor({}, "background");
+  const inputBorder = useThemeColor({}, "borderColor");
+  const textColor = useThemeColor({}, "text");
+  const placeholderColor = useThemeColor({}, "text"); // or muted
+  const btnBg = useThemeColor({}, "tint");
+  const btnText = useThemeColor({}, "background");
+  const commentItemBg = useThemeColor({}, "background");
+  const commentBorder = useThemeColor({}, "borderColor");
+  const authorColor = useThemeColor({}, "text");
+  const contentColor = useThemeColor({}, "text");
 
   const canComment = Boolean(user && user.id);
 
@@ -86,28 +101,29 @@ export default function Comments({ recipeId }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Comentarios</Text>
+    <View style={[styles.container, { backgroundColor: containerBg }]}>
+      <Text style={[styles.header, { color: headerColor }]}>Comentarios</Text>
 
       {canComment ? (
         <View style={styles.form}>
-          <Text style={styles.label}>Escribe un comentario</Text>
+          <Text style={[styles.label, { color: labelColor }]}>Escribe un comentario</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: inputBg, borderColor: inputBorder, color: textColor }]}
             value={content}
             onChangeText={setContent}
             placeholder="Comparte tu opinión o tips sobre esta receta…"
+            placeholderTextColor={placeholderColor}
             multiline
             numberOfLines={3}
             textAlignVertical="top"
           />
           <View style={styles.btnContainer}>
             <Pressable
-              style={[styles.btn, posting && styles.btnDisabled]}
+              style={[styles.btn, posting && styles.btnDisabled, { backgroundColor: btnBg }]}
               onPress={handleSubmit}
               disabled={posting}
             >
-              <Text style={styles.btnText}>
+              <Text style={[styles.btnText, { color: btnText }]}>
                 {posting ? "Publicando…" : "Publicar comentario"}
               </Text>
             </Pressable>
@@ -139,12 +155,12 @@ export default function Comments({ recipeId }) {
               : "";
 
             return (
-              <View key={c.id} style={styles.commentItem}>
+              <View key={c.id} style={[styles.commentItem, { backgroundColor: commentItemBg, borderColor: commentBorder }]}>
                 <View style={styles.commentHeader}>
-                  <Text style={styles.author}>{author}</Text>
+                  <Text style={[styles.author, { color: authorColor }]}>{author}</Text>
                   <Text style={styles.date}>{date}</Text>
                 </View>
-                <Text style={styles.commentContent}>{c.content}</Text>
+                <Text style={[styles.commentContent, { color: contentColor }]}>{c.content}</Text>
                 {isOwner && (
                   <Pressable
                     style={styles.deleteBtn}
@@ -169,13 +185,13 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 24,
     padding: 16,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff', // Removed static color
     borderRadius: SIZES.radius,
   },
   header: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
     marginBottom: 16,
   },
   form: {
@@ -184,22 +200,22 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '600',
     marginBottom: 8,
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.honey,
+    // borderColor: COLORS.honey, // Removed static color
     borderRadius: SIZES.radius,
     padding: 12,
     minHeight: 80,
     marginBottom: 8,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff', // Removed static color
   },
   btnContainer: {
     alignItems: 'flex-end',
   },
   btn: {
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary, // Removed static color
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -208,7 +224,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   btnText: {
-    color: '#fff',
+    // color: '#fff', // Removed static color
     fontWeight: '600',
   },
   mutedText: {
@@ -225,9 +241,9 @@ const styles = StyleSheet.create({
   commentItem: {
     padding: 12,
     borderRadius: 12,
-    backgroundColor: COLORS.bg,
+    // backgroundColor: COLORS.bg, // Removed static color
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.06)',
+    // borderColor: 'rgba(0,0,0,0.06)', // Removed static color
   },
   commentHeader: {
     flexDirection: 'row',
@@ -236,7 +252,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontWeight: 'bold',
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
     fontSize: 14,
   },
   date: {
@@ -245,7 +261,7 @@ const styles = StyleSheet.create({
   },
   commentContent: {
     fontSize: 14,
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
     marginBottom: 4,
   },
   deleteBtn: {

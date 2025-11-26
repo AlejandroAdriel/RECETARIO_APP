@@ -12,12 +12,18 @@ import { AuthContext } from "../../src/store/authContext";
 import { getUserFavorites } from "../../src/services/api";
 import RecipeCard from "../../src/components/RecipeCard";
 import { COLORS } from "../../src/constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 export default function Favorites() {
   const { user } = useContext(AuthContext);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const backgroundColor = useThemeColor({}, "background");
+  const textColor = useThemeColor({}, "text");
+  const sectionTitleColor = useThemeColor({}, "sectionTitle");
+  const emptyTextColor = useThemeColor({}, "text");
 
   const loadFavorites = async () => {
     if (!user) return;
@@ -49,18 +55,18 @@ export default function Favorites() {
   // Si no hay usuario logueado
   if (!user) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={styles.center}>
           <Text style={styles.title}>Favoritos</Text>
-          <Text style={styles.text}>Inicia sesión para ver tus favoritos.</Text>
+          <Text style={[styles.text, { color: textColor }]}>Inicia sesión para ver tus favoritos.</Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* Usamos nuestro propio header visual, ocultamos el nativo */}
       <Stack.Screen options={{ headerShown: false }} />
 
@@ -75,7 +81,7 @@ export default function Favorites() {
         ListHeaderComponent={
           <View style={styles.headerContainer}>
             <Text style={styles.appTitle}>SUPER • RECETARIO</Text>
-            <Text style={styles.sectionTitle}>Mis favoritos</Text>
+            <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Mis favoritos</Text>
 
             {loading && (
               <ActivityIndicator
@@ -90,7 +96,7 @@ export default function Favorites() {
             ) : null}
 
             {!loading && !errorMsg && list.length === 0 && (
-              <Text style={styles.emptyText}>Aún no tienes favoritos.</Text>
+              <Text style={[styles.emptyText, { color: emptyTextColor }]}>Aún no tienes favoritos.</Text>
             )}
           </View>
         }
@@ -104,7 +110,7 @@ const styles = StyleSheet.create({
   // Fondo azul como en Home
   container: {
     flex: 1,
-    backgroundColor: COLORS.seaBlue,
+    // backgroundColor: COLORS.seaBlue, // Removed static color
   },
 
   listContent: {
@@ -136,7 +142,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#FFFFFF",        // 👈 forzado a blanco
+    // color: "#FFFFFF",        // Removed static color
     textAlign: "left",
     marginTop: 4,
     marginBottom: 8,
@@ -167,7 +173,7 @@ const styles = StyleSheet.create({
 
   emptyText: {
     fontSize: 16,
-    color: "#FFFFFF",
+    // color: "#FFFFFF", // Removed static color
     marginTop: 8,
     textAlign: "center",
   },

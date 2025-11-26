@@ -1,5 +1,6 @@
 import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
 import { COLORS, SIZES } from "../constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const TIME = [
   { key: "15-30", label: "15-30" },
@@ -19,6 +20,15 @@ export default function Filters({ value = {}, onChange }) {
     restrictions: value.restrictions?.map(r => r.toLowerCase()) || [],
   };
 
+  const titleColor = useThemeColor({}, "text");
+  const sectionTitleColor = useThemeColor({}, "text");
+  const chipBg = useThemeColor({}, "background");
+  const chipBorder = useThemeColor({}, "borderColor");
+  const chipText = useThemeColor({}, "text");
+  const activeChipBg = useThemeColor({}, "tint");
+  const activeChipText = useThemeColor({}, "background"); // Usually white or black depending on tint
+  const clearColor = useThemeColor({}, "tint");
+
   const toggle = (group, key) => {
     const set = new Set(v[group]);
     set.has(key) ? set.delete(key) : set.add(key);
@@ -29,7 +39,7 @@ export default function Filters({ value = {}, onChange }) {
 
   const renderSection = (title, items, group, labelFn = (x) => x) => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
         {items.map((item) => {
           const key = item.key || item;
@@ -38,10 +48,10 @@ export default function Filters({ value = {}, onChange }) {
           return (
             <Pressable
               key={key}
-              style={[styles.chip, isActive && styles.chipActive]}
+              style={[styles.chip, { backgroundColor: chipBg, borderColor: chipBorder }, isActive && { backgroundColor: activeChipBg, borderColor: activeChipBg }]}
               onPress={() => toggle(group, key)}
             >
-              <Text style={[styles.chipText, isActive && styles.chipTextActive]}>
+              <Text style={[styles.chipText, { color: chipText }, isActive && { color: activeChipText }]}>
                 {label}
               </Text>
             </Pressable>
@@ -54,9 +64,9 @@ export default function Filters({ value = {}, onChange }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Filtros</Text>
+        <Text style={[styles.title, { color: titleColor }]}>Filtros</Text>
         <Pressable onPress={clearAll}>
-          <Text style={styles.clear}>Limpiar</Text>
+          <Text style={[styles.clear, { color: clearColor }]}>Limpiar</Text>
         </Pressable>
       </View>
       
@@ -81,10 +91,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: COLORS.coffee,
+    // color: COLORS.coffee, // Removed static color
   },
   clear: {
-    color: COLORS.primary,
+    // color: COLORS.primary, // Removed static color
   },
   section: {
     marginBottom: 12,
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.muted,
+    // color: COLORS.muted, // Removed static color
     marginBottom: 4,
   },
   chips: {
@@ -102,19 +112,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: COLORS.bg,
+    // backgroundColor: COLORS.bg, // Removed static color
     borderWidth: 1,
-    borderColor: COLORS.honey,
+    // borderColor: COLORS.honey, // Removed static color
   },
   chipActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
+    // backgroundColor: COLORS.primary, // Removed static color
+    // borderColor: COLORS.primary, // Removed static color
   },
   chipText: {
     fontSize: 12,
-    color: COLORS.ink,
+    // color: COLORS.ink, // Removed static color
   },
   chipTextActive: {
-    color: '#fff',
+    // color: '#fff', // Removed static color
   },
 });
