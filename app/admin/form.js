@@ -6,6 +6,7 @@ import AdminRecipeForm from "../../src/components/AdminRecipeForm";
 import { AuthContext } from "../../src/store/authContext";
 import { getRecipes, createRecipe, updateRecipe } from "../../src/services/api";
 import { COLORS } from "../../src/constants/theme";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 export default function AdminForm() {
   const { id } = useLocalSearchParams();
@@ -13,6 +14,12 @@ export default function AdminForm() {
   const { token } = useContext(AuthContext);
   const [initialData, setInitialData] = useState(null);
   const [loading, setLoading] = useState(!!id);
+
+  // Dynamic Colors
+  const backgroundColor = useThemeColor({}, "background");
+  const textColor = useThemeColor({}, "text");
+  const borderColor = useThemeColor({}, "borderColor");
+  const btnPrimary = useThemeColor({}, "buttonPrimary");
 
   useEffect(() => {
     if (id) {
@@ -53,16 +60,16 @@ export default function AdminForm() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View style={[styles.center, { backgroundColor }]}>
+        <ActivityIndicator size="large" color={btnPrimary} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{id ? "Editar Receta" : "Nueva Receta"}</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <View style={[styles.header, { borderColor }]}>
+        <Text style={[styles.title, { color: textColor }]}>{id ? "Editar Receta" : "Nueva Receta"}</Text>
       </View>
       <AdminRecipeForm 
         initial={initialData} 
@@ -76,17 +83,14 @@ export default function AdminForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.bg,
   },
   header: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.coffee,
     textAlign: 'center',
   },
   center: {

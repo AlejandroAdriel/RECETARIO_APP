@@ -32,9 +32,6 @@
       }
     },
     "owner": "alejandroadriel",
-    "plugins": [
-      "expo-font",
-      "expo-asset"
-    ]
+    "plugins": []
   }
 }

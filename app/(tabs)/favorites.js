@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, Stack } from "expo-router";
@@ -20,10 +21,16 @@ export default function Favorites() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const { width } = useWindowDimensions();
+  const numColumns = width > 600 ? 3 : 1;
+
   const backgroundColor = useThemeColor({}, "background");
   const textColor = useThemeColor({}, "text");
-  const sectionTitleColor = useThemeColor({}, "sectionTitle");
+  const sectionTitleColor = useThemeColor({}, "text");
   const emptyTextColor = useThemeColor({}, "text");
+
+  const headerBg = useThemeColor({}, "headerBackground");
+  const headerText = useThemeColor({}, "headerText");
 
   const loadFavorites = async () => {
     if (!user) return;
@@ -58,7 +65,7 @@ export default function Favorites() {
       <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={styles.center}>
-          <Text style={styles.title}>Favoritos</Text>
+          <Text style={[styles.title, { color: textColor }]}>Favoritos</Text>
           <Text style={[styles.text, { color: textColor }]}>Inicia sesión para ver tus favoritos.</Text>
         </View>
       </SafeAreaView>
@@ -80,7 +87,9 @@ export default function Favorites() {
         )}
         ListHeaderComponent={
           <View style={styles.headerContainer}>
-            <Text style={styles.appTitle}>SUPER • RECETARIO</Text>
+            <View style={[styles.headerRow, { backgroundColor: headerBg }]}>
+              <Text style={[styles.appTitle, { color: headerText }]}>SUPER RECETARIO</Text>
+            </View>
             <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Mis favoritos</Text>
 
             {loading && (
@@ -101,6 +110,11 @@ export default function Favorites() {
           </View>
         }
         contentContainerStyle={styles.listContent}
+        numColumns={numColumns}
+        key={numColumns}
+        columnWrapperStyle={
+          numColumns > 1 ? { justifyContent: "flex-start" } : undefined
+        }
       />
     </SafeAreaView>
   );
@@ -114,42 +128,37 @@ const styles = StyleSheet.create({
   },
 
   listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 100, // para que no lo tape el tab bar
+    padding: 16,
+    paddingBottom: 100,
   },
 
   headerContainer: {
-    marginTop: 16,
-    marginBottom: 12,
+    marginBottom: 16,
   },
-
-  // SUPER • RECETARIO igual que en el home
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 26,
+    marginBottom: 14,
+  },
   appTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
     textTransform: "uppercase",
     letterSpacing: 1.8,
-    color: COLORS.text,
-    backgroundColor: COLORS.honey,
-    paddingVertical: 12,
-    borderRadius: 26,
-    overflow: "hidden",
-    marginBottom: 10,
   },
 
-  // "Mis favoritos" AHORA EN BLANCO para que contraste bien
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
-    // color: "#FFFFFF",        // Removed static color
-    textAlign: "left",
-    marginTop: 4,
     marginBottom: 8,
   },
 
   cardWrapper: {
-    marginBottom: 16,
+    paddingHorizontal: 8,
   },
 
   center: {
@@ -162,8 +171,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: COLORS.coffee,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   text: {
     fontSize: 16,

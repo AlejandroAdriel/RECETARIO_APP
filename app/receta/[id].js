@@ -5,10 +5,12 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
 import { getRecipeById } from "../../src/services/api";
 import Comments from "../../src/components/Comments";
 import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
@@ -36,6 +38,7 @@ const getTagColors = (tag) => {
 
 export default function RecipeDetail() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const [receta, setReceta] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,6 +53,7 @@ export default function RecipeDetail() {
   const descriptionColor = useThemeColor({}, "text");
   const listTextColor = useThemeColor({}, "text");
   const emptyTextColor = useThemeColor({}, "text");
+  const borderColor = useThemeColor({}, "borderColor");
 
   useEffect(() => {
     (async () => {
@@ -91,16 +95,19 @@ export default function RecipeDetail() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor }]}>
+      <View style={styles.headerContainer}>
+        <View style={[styles.headerRow, { backgroundColor: headerBg }]}>
+          <Pressable onPress={() => router.back()} style={styles.backBtn}>
+            <Ionicons name="arrow-back" size={24} color={headerText} />
+          </Pressable>
+          <Text style={[styles.appTitle, { color: headerText }]}>SUPER RECETARIO</Text>
+        </View>
+      </View>
+
       <ScrollView
         style={[styles.screen, { backgroundColor }]}
         contentContainerStyle={styles.screenContent}
       >
-        {/* Encabezado tipo mockup: SUPER • RECETARIO */}
-        <View style={styles.headerContainer}>
-          <Text style={[styles.appTitle, { backgroundColor: headerBg, color: headerText }]}>SUPER • RECETARIO</Text>
-        </View>
-
-        {/* Tarjeta principal con la receta */}
         <View style={[styles.card, { backgroundColor: cardBg }]}>
           {/* Imagen */}
           <View style={styles.imageWrapper}>
@@ -261,25 +268,30 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // Encabezado SUPER • RECETARIO (igual que en el home)
   headerContainer: {
-    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    marginBottom: 0,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 26,
+    marginBottom: 14,
+  },
+  backBtn: {
+    marginRight: 12,
   },
   appTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
     textTransform: "uppercase",
     letterSpacing: 1.8,
-    // color: COLORS.text, // Removed static color
-    // backgroundColor: COLORS.honey, // Removed static color
-    paddingVertical: 12,
-    borderRadius: 26,
-    overflow: "hidden",
-    marginBottom: 4,
   },
 
-  // Tarjeta de receta
   card: {
     // backgroundColor: COLORS.paper, // Removed static color
     borderRadius: SIZES.radiusLg,

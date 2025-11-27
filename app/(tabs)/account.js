@@ -6,22 +6,37 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  Alert,
+  Alert, 
   ActivityIndicator,
-  SafeAreaView,
+  Switch,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../../src/store/authContext";
+import { useTheme } from "../../src/store/themeContext";
+import { useThemeColor } from "../../hooks/useThemeColor";
 import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
-
-const BEIGE = "#f4e3cd";
-const HEADER_PILL = "#e7c988";
 
 export default function Account() {
   const router = useRouter();
   const { user, login, register, logout, isLoading } = useContext(AuthContext);
+  const { theme, toggleTheme } = useTheme();
   const [mode, setMode] = useState("login");
+
+  // Dynamic Colors
+  const backgroundColor = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "cardBackground");
+  const textColor = useThemeColor({}, "text");
+  const textLightColor = useThemeColor({}, "textLight");
+  const headerBg = useThemeColor({}, "headerBackground");
+  const headerText = useThemeColor({}, "headerText");
+  const inputBg = useThemeColor({}, "inputBackground");
+  const placeholderColor = useThemeColor({}, "placeholderText");
+  const borderColor = useThemeColor({}, "borderColor");
+  const btnPrimary = useThemeColor({}, "buttonPrimary");
+  const btnText = useThemeColor({}, "buttonText");
+  const dangerColor = useThemeColor({}, "danger");
 
   // Login state
   const [lEmail, setLEmail] = useState("");
@@ -62,72 +77,78 @@ export default function Account() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
+          <ActivityIndicator size="large" color={btnPrimary} />
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.screen}>
-
-        {/* ---------- HEADER (IGUAL A FAVORITOS Y HOME) ---------- */}
-        <View style={styles.headerContainer}>
-          <View style={styles.headerPill}>
-            <Text style={styles.headerTitle}>SUPER</Text>
-            <Ionicons name="leaf" size={18} color="#000" />
-            <Text style={styles.headerTitle}>RECETARIO</Text>
-          </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+      <View style={styles.headerContainer}>
+        <View style={[styles.headerRow, { backgroundColor: headerBg }]}>
+          <Text style={[styles.appTitle, { color: headerText }]}>SUPER RECETARIO</Text>
         </View>
+      </View>
 
-        {/* ---------- CONTENIDO ---------- */}
+      <View style={[styles.screen, { backgroundColor }]}>
         <ScrollView
-          style={styles.scroll}
+          style={[styles.scroll, { backgroundColor }]}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
 
           {/* ---------- MODO LOGUEADO ---------- */}
           {user ? (
-            <View style={styles.panel}>
+            <View style={[styles.panel, { backgroundColor: cardBg }]}>
               <View style={styles.avatarContainer}>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>
+                <View style={[styles.avatar, { backgroundColor: btnPrimary }]}>
+                  <Text style={[styles.avatarText, { color: btnText }]}>
                     {user.username?.[0]?.toUpperCase()}
                   </Text>
                 </View>
-                <Text style={styles.username}>{user.username}</Text>
-                <Text style={styles.role}>{user.role}</Text>
+                <Text style={[styles.username, { color: textColor }]}>{user.username}</Text>
+                <Text style={[styles.role, { color: textLightColor }]}>{user.role}</Text>
               </View>
 
-              <View style={styles.infoSection}>
+              <View style={[styles.infoSection, { borderColor }]}>
                 <View style={styles.row}>
-                  <Text style={styles.label}>Email</Text>
-                  <Text style={styles.value}>{user.email}</Text>
+                  <Text style={[styles.label, { color: textLightColor }]}>Email</Text>
+                  <Text style={[styles.value, { color: textColor }]}>{user.email}</Text>
+                </View>
+                
+                {/* Theme Toggle */}
+                <View style={styles.row}>
+                  <Text style={[styles.label, { color: textLightColor }]}>Modo Oscuro</Text>
+                  <Switch 
+                    value={theme === 'dark'} 
+                    onValueChange={toggleTheme}
+                    trackColor={{ false: "#767577", true: btnPrimary }}
+                    thumbColor={theme === 'dark' ? "#f4f3f4" : "#f4f3f4"}
+                  />
                 </View>
               </View>
 
               {user.role === "admin" && (
                 <Pressable
-                  style={[styles.btn, styles.btnAdmin]}
+                  style={[styles.btn, styles.btnAdmin, { borderColor: btnPrimary, backgroundColor: 'transparent' }]}
                   onPress={() => router.push("/admin")}
                 >
-                  <Ionicons name="settings-outline" size={20} color={COLORS.primary} />
-                  <Text style={[styles.btnText, { color: COLORS.primary }]}>
+                  <Ionicons name="settings-outline" size={20} color={btnPrimary} />
+                  <Text style={[styles.btnText, { color: btnPrimary }]}>
                     Administrar Recetas
                   </Text>
                 </Pressable>
               )}
 
               <Pressable
-                style={[styles.btn, styles.btnLogout]}
+                style={[styles.btn, styles.btnLogout, { backgroundColor: COLORS.danger }]}
                 onPress={logout}
               >
                 <Ionicons name="log-out-outline" size={20} color="#fff" />
-                <Text style={styles.btnText}>Cerrar sesión</Text>
+                <Text style={[styles.btnText, { color: "#fff" }]}>Cerrar sesión</Text>
               </Pressable>
             </View>
           ) : (
@@ -135,22 +156,22 @@ export default function Account() {
             <>
 
               <View style={styles.illustrationWrapper}>
-                <View style={styles.illustrationCircle}>
-                  <Ionicons name="image-outline" size={46} color={COLORS.primary} />
+                <View style={[styles.illustrationCircle, { backgroundColor: cardBg }]}>
+                  <Ionicons name="image-outline" size={46} color={btnPrimary} />
                 </View>
               </View>
 
-              <View style={styles.authPanel}>
+              <View style={[styles.authPanel, { backgroundColor: cardBg }]}>
                 {mode === "login" ? (
                   <View style={styles.form}>
-                    <Text style={styles.formTitle}>Iniciar Sesión</Text>
+                    <Text style={[styles.formTitle, { color: textColor }]}>Iniciar Sesión</Text>
 
                     <View style={styles.inputGroup}>
-                      <Text style={styles.fieldLabel}>Username</Text>
+                      <Text style={[styles.fieldLabel, { color: textColor }]}>Username</Text>
                       <TextInput
-                        style={styles.darkInput}
+                        style={[styles.input, { backgroundColor: inputBg, color: textColor, borderColor }]}
                         placeholder="Ingresa tu usuario..."
-                        placeholderTextColor="#d9d0c6"
+                        placeholderTextColor={placeholderColor}
                         value={lEmail}
                         onChangeText={setLEmail}
                         autoCapitalize="none"
@@ -159,12 +180,12 @@ export default function Account() {
                     </View>
 
                     <View style={styles.inputGroup}>
-                      <Text style={styles.fieldLabel}>Contraseña</Text>
-                      <View style={styles.passwordContainerDark}>
+                      <Text style={[styles.fieldLabel, { color: textColor }]}>Contraseña</Text>
+                      <View style={[styles.passwordContainer, { backgroundColor: inputBg, borderColor }]}>
                         <TextInput
-                          style={styles.passwordInputDark}
+                          style={[styles.passwordInput, { color: textColor }]}
                           placeholder="********"
-                          placeholderTextColor="#d9d0c6"
+                          placeholderTextColor={placeholderColor}
                           secureTextEntry={!lShowPass}
                           value={lPassword}
                           onChangeText={setLPassword}
@@ -173,26 +194,26 @@ export default function Account() {
                           <Ionicons
                             name={lShowPass ? "eye-off-outline" : "eye-outline"}
                             size={20}
-                            color="#d9d0c6"
+                            color={placeholderColor}
                           />
                         </Pressable>
                       </View>
                     </View>
 
                     <Pressable
-                      style={[styles.btn, styles.btnPrimary]}
+                      style={[styles.btn, styles.btnPrimary, { backgroundColor: btnPrimary }]}
                       onPress={handleLogin}
                     >
                       {lLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color={btnText} />
                       ) : (
-                        <Text style={styles.btnText}>Iniciar Sesión</Text>
+                        <Text style={[styles.btnText, { color: btnText }]}>Iniciar Sesión</Text>
                       )}
                     </Pressable>
 
-                    <Text style={styles.helperText}>
+                    <Text style={[styles.helperText, { color: textColor }]}>
                       Si no tienes una cuenta{" "}
-                      <Text style={styles.helperLink} onPress={() => setMode("register")}>
+                      <Text style={[styles.helperLink, { color: textColor }]} onPress={() => setMode("register")}>
                         regístrate aquí
                       </Text>
                     </Text>
@@ -200,13 +221,14 @@ export default function Account() {
                 ) : (
                   /* Registro */
                   <View style={styles.form}>
-                    <Text style={styles.formTitle}>Crear cuenta nueva</Text>
+                    <Text style={[styles.formTitle, { color: textColor }]}>Crear cuenta nueva</Text>
 
                     <View style={styles.inputGroup}>
-                      <Text style={styles.fieldLabel}>Nombre de usuario</Text>
+                      <Text style={[styles.fieldLabel, { color: textColor }]}>Nombre de usuario</Text>
                       <TextInput
-                        style={styles.input}
+                        style={[styles.input, { backgroundColor: inputBg, color: textColor, borderColor }]}
                         placeholder="Usuario"
+                        placeholderTextColor={placeholderColor}
                         value={rUsername}
                         onChangeText={setRUsername}
                         autoCapitalize="none"
@@ -214,10 +236,11 @@ export default function Account() {
                     </View>
 
                     <View style={styles.inputGroup}>
-                      <Text style={styles.fieldLabel}>Correo electrónico</Text>
+                      <Text style={[styles.fieldLabel, { color: textColor }]}>Correo electrónico</Text>
                       <TextInput
-                        style={styles.input}
+                        style={[styles.input, { backgroundColor: inputBg, color: textColor, borderColor }]}
                         placeholder="ejemplo@correo.com"
+                        placeholderTextColor={placeholderColor}
                         keyboardType="email-address"
                         value={rEmail}
                         onChangeText={setREmail}
@@ -225,11 +248,12 @@ export default function Account() {
                     </View>
 
                     <View style={styles.inputGroup}>
-                      <Text style={styles.fieldLabel}>Contraseña</Text>
-                      <View style={styles.passwordContainer}>
+                      <Text style={[styles.fieldLabel, { color: textColor }]}>Contraseña</Text>
+                      <View style={[styles.passwordContainer, { backgroundColor: inputBg, borderColor }]}>
                         <TextInput
-                          style={styles.passwordInput}
+                          style={[styles.passwordInput, { color: textColor }]}
                           placeholder="********"
+                          placeholderTextColor={placeholderColor}
                           secureTextEntry={!rShowPass}
                           value={rPassword}
                           onChangeText={setRPassword}
@@ -238,26 +262,26 @@ export default function Account() {
                           <Ionicons
                             name={rShowPass ? "eye-off-outline" : "eye-outline"}
                             size={20}
-                            color={COLORS.textLight}
+                            color={placeholderColor}
                           />
                         </Pressable>
                       </View>
                     </View>
 
                     <Pressable
-                      style={[styles.btn, styles.btnPrimary]}
+                      style={[styles.btn, styles.btnPrimary, { backgroundColor: btnPrimary }]}
                       onPress={handleRegister}
                     >
                       {rLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color={btnText} />
                       ) : (
-                        <Text style={styles.btnText}>Crear cuenta</Text>
+                        <Text style={[styles.btnText, { color: btnText }]}>Crear cuenta</Text>
                       )}
                     </Pressable>
 
-                    <Text style={styles.helperText}>
+                    <Text style={[styles.helperText, { color: textColor }]}>
                       ¿Ya tienes una cuenta?{" "}
-                      <Text style={styles.helperLink} onPress={() => setMode("login")}>
+                      <Text style={[styles.helperLink, { color: textColor }]} onPress={() => setMode("login")}>
                         Inicia sesión
                       </Text>
                     </Text>
@@ -273,147 +297,91 @@ export default function Account() {
 }
 
 const styles = StyleSheet.create({
-
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.primary,
   },
-
   screen: {
     flex: 1,
-    backgroundColor: COLORS.primary,
   },
-
   scroll: {
     flex: 1,
-    backgroundColor: COLORS.primary,
   },
-
-  /* ---------- HEADER CORRECTO (FONDO AZUL + PASTILLA BEIGE) ---------- */
   headerContainer: {
-    width: "100%",
-    backgroundColor: COLORS.primary,
-    paddingVertical: 12,
-    alignItems: "center",
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
-
-  headerPill: {
-    backgroundColor: HEADER_PILL,
-    paddingHorizontal: 32,
-    paddingVertical: 10,
-    borderRadius: 999,
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 26,
+    marginBottom: 14,
   },
-
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "900",
-    color: "#000",
+  appTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    letterSpacing: 1.8,
   },
-
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     paddingBottom: 40,
-    paddingTop: 20,
+    paddingTop: 0,
   },
-
-  /* ---------- LOGIN / REGISTER ---------- */
   illustrationWrapper: {
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 10,
   },
-
   illustrationCircle: {
-    width: 135,
-    height: 135,
-    backgroundColor: BEIGE,
-    borderRadius: 70,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
   },
-
   authPanel: {
     width: "100%",
-    backgroundColor: BEIGE,
     padding: 24,
     borderRadius: 40,
     ...SHADOWS.default,
   },
-
   form: {
     gap: 16,
   },
-
   formTitle: {
     textAlign: "center",
     fontSize: 22,
     fontWeight: "bold",
-    color: "#3b312c",
   },
-
   fieldLabel: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#3b312c",
   },
-
   inputGroup: {
     gap: 6,
   },
-
-  darkInput: {
-    backgroundColor: "#3b312c",
-    color: "#fff",
-    borderRadius: 30,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-
-  passwordContainerDark: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#3b312c",
-    borderRadius: 30,
-    paddingHorizontal: 12,
-  },
-
-  passwordInputDark: {
-    flex: 1,
-    color: "#fff",
-    paddingVertical: 12,
-    paddingHorizontal: 6,
-  },
-
   input: {
-    backgroundColor: BEIGE,
     borderWidth: 1,
-    borderColor: "#d0c4b6",
     borderRadius: 14,
     padding: 14,
     fontSize: 16,
-    color: COLORS.text,
   },
-
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: BEIGE,
     borderWidth: 1,
-    borderColor: "#d0c4b6",
     borderRadius: 14,
     paddingHorizontal: 12,
   },
-
   passwordInput: {
     flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 6,
     fontSize: 16,
   },
-
   btn: {
     paddingVertical: 14,
     borderRadius: 14,
@@ -422,105 +390,80 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
   },
-
   btnPrimary: {
-    backgroundColor: "#849a63",
     marginTop: 12,
   },
-
   btnLogout: {
-    backgroundColor: "#d04637",
     marginTop: 12,
   },
-
   btnAdmin: {
-    backgroundColor: "#f5f9ff",
     borderWidth: 1,
-    borderColor: COLORS.primary,
   },
-
   btnText: {
-    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
-
   helperText: {
     textAlign: "center",
     marginTop: 8,
-    color: "#3b312c",
     fontStyle: "italic",
   },
-
   helperLink: {
     fontWeight: "bold",
     textDecorationLine: "underline",
   },
-
-  /* ---------- PANEL DE CUENTA ---------- */
   panel: {
-    backgroundColor: BEIGE,
     padding: 24,
     borderRadius: 40,
     ...SHADOWS.default,
   },
-
   avatarContainer: {
     alignItems: "center",
     marginBottom: 16,
   },
-
   avatar: {
     width: 80,
     height: 80,
-    backgroundColor: COLORS.primary,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
-
   avatarText: {
-    color: "#fff",
     fontSize: 32,
     fontWeight: "bold",
   },
-
   username: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 6,
   },
-
   role: {
     textAlign: "center",
-    color: COLORS.textLight,
     marginTop: 2,
     marginBottom: 12,
   },
-
   infoSection: {
     paddingVertical: 12,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: "#d0c4b6",
     marginBottom: 18,
   },
-
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 6,
   },
-
-  
   label: {
     fontWeight: "600",
-    color: COLORS.textLight,
   },
-
   value: {
     fontWeight: "600",
-    color: COLORS.text,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

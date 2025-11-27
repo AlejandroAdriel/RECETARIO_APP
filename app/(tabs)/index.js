@@ -166,14 +166,7 @@ export default function Home() {
         ListHeaderComponent={
           <View style={styles.headerContainer}>
             <View style={[styles.headerRow, { backgroundColor: headerBg }]}>
-              <Text style={[styles.appTitle, { color: headerText }]}>SUPER • RECETARIO</Text>
-              <Pressable onPress={toggleTheme} style={styles.themeBtn}>
-                <Ionicons 
-                  name={theme === 'dark' ? "sunny" : "moon"} 
-                  size={24} 
-                  color={headerText} 
-                />
-              </Pressable>
+              <Text style={[styles.appTitle, { color: headerText }]}>SUPER RECETARIO</Text>
             </View>
 
             <SearchBar

@@ -3,6 +3,7 @@ import { View, Text, TextInput, ScrollView, StyleSheet, Pressable, Alert } from 
 import { COLORS, SIZES } from "../constants/theme";
 import { AuthContext } from "../store/authContext";
 import { getRecipes } from "../services/api";
+import { useThemeColor } from "../../hooks/useThemeColor";
 
 const DIFFICULTIES = ["Fácil", "Intermedio", "Difícil"];
 
@@ -25,6 +26,18 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
   const [tagInput, setTagInput] = useState("");
 
   const [existingCategories, setExistingCategories] = useState([]);
+
+  // Dynamic Colors
+  const backgroundColor = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "cardBackground"); // Using cardBg for inputs to distinguish from main bg
+  const textColor = useThemeColor({}, "text");
+  const textLightColor = useThemeColor({}, "textLight");
+  const borderColor = useThemeColor({}, "borderColor");
+  const inputBg = useThemeColor({}, "inputBackground");
+  const placeholderColor = useThemeColor({}, "placeholderText");
+  const btnPrimary = useThemeColor({}, "buttonPrimary");
+  const btnText = useThemeColor({}, "buttonText");
+  const dangerColor = useThemeColor({}, "danger");
 
   useEffect(() => {
     // Fetch recipes to get existing categories
@@ -92,73 +105,81 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
     await onSubmit?.(payload);
   };
 
+  const inputStyle = [styles.input, { backgroundColor: inputBg, borderColor, color: textColor }];
+  const labelStyle = [styles.label, { color: textColor }];
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={[styles.container, { backgroundColor }]} contentContainerStyle={styles.content}>
       <View style={styles.group}>
-        <Text style={styles.label}>Nombre</Text>
+        <Text style={labelStyle}>Nombre</Text>
         <TextInput 
-            style={styles.input} 
+            style={inputStyle} 
             value={name} 
             onChangeText={setName} 
             placeholder="Nombre de la receta" 
+            placeholderTextColor={placeholderColor}
         />
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Descripción</Text>
+        <Text style={labelStyle}>Descripción</Text>
         <TextInput 
-            style={[styles.input, styles.textArea]} 
+            style={[inputStyle, styles.textArea]} 
             value={description} 
             onChangeText={setDescription} 
             placeholder="Describe la receta" 
+            placeholderTextColor={placeholderColor}
             multiline 
             numberOfLines={3}
         />
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Imagen (URL)</Text>
+        <Text style={labelStyle}>Imagen (URL)</Text>
         <TextInput 
-            style={styles.input} 
+            style={inputStyle} 
             value={image} 
             onChangeText={setImage} 
             onBlur={handleImageBlur}
             placeholder="https://... o nombre.jpg" 
+            placeholderTextColor={placeholderColor}
         />
-        <Text style={styles.helperText}>Dejar vacío para usar la imagen por defecto basada en el ID.</Text>
+        <Text style={[styles.helperText, { color: textLightColor }]}>Dejar vacío para usar la imagen por defecto basada en el ID.</Text>
       </View>
 
       <View style={styles.row}>
         <View style={[styles.group, { flex: 1 }]}>
-            <Text style={styles.label}>Tiempo (min)</Text>
+            <Text style={labelStyle}>Tiempo (min)</Text>
             <TextInput 
-                style={styles.input} 
+                style={inputStyle} 
                 value={cookTime} 
                 onChangeText={setCookTime} 
                 keyboardType="numeric"
+                placeholderTextColor={placeholderColor}
             />
         </View>
         <View style={[styles.group, { flex: 1 }]}>
-            <Text style={styles.label}>Porciones</Text>
+            <Text style={labelStyle}>Porciones</Text>
             <TextInput 
-                style={styles.input} 
+                style={inputStyle} 
                 value={servings} 
                 onChangeText={setServings} 
                 keyboardType="numeric"
+                placeholderTextColor={placeholderColor}
             />
         </View>
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Dificultad</Text>
+        <Text style={labelStyle}>Dificultad</Text>
         <View style={styles.pills}>
             {DIFFICULTIES.map((d) => (
                 <Pressable 
                     key={d} 
-                    style={[styles.pill, difficulty === d && styles.pillActive]}
+                    style={[styles.pill, { borderColor: btnPrimary }, difficulty === d && { backgroundColor: btnPrimary }]}
                     onPress={() => setDifficulty(d)}
                 >
-                    <Text style={[styles.pillText, difficulty === d && styles.pillTextActive]}>
+                    <Text style={[styles.pillText, { color: btnPrimary }, difficulty === d && { color: btnText }]}>
                         {d.charAt(0).toUpperCase() + d.slice(1)}
                     </Text>
                 </Pressable>
@@ -167,22 +188,23 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Categoría</Text>
+        <Text style={labelStyle}>Categoría</Text>
         <TextInput 
-            style={styles.input} 
+            style={inputStyle} 
             value={category} 
             onChangeText={setCategory} 
             placeholder="Postre, Plato principal..." 
+            placeholderTextColor={placeholderColor}
         />
         {existingCategories.length > 0 && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
             {existingCategories.map((cat, idx) => (
               <Pressable 
                 key={idx} 
-                style={[styles.pill, category === cat && styles.pillActive]}
+                style={[styles.pill, { borderColor: btnPrimary }, category === cat && { backgroundColor: btnPrimary }]}
                 onPress={() => setCategory(cat)}
               >
-                <Text style={[styles.pillText, category === cat && styles.pillTextActive]}>
+                <Text style={[styles.pillText, { color: btnPrimary }, category === cat && { color: btnText }]}>
                   {cat}
                 </Text>
               </Pressable>
@@ -192,61 +214,64 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Ingredientes</Text>
+        <Text style={labelStyle}>Ingredientes</Text>
         <View style={styles.inputRow}>
           <TextInput 
-            style={[styles.input, { flex: 1 }]} 
+            style={[inputStyle, { flex: 1 }]} 
             value={ingInput} 
             onChangeText={setIngInput} 
             placeholder="Agregar ingrediente" 
+            placeholderTextColor={placeholderColor}
           />
-          <Pressable style={styles.btnAdd} onPress={() => handleAddToList(setIngredients, ingInput, setIngInput)}>
+          <Pressable style={[styles.btnAdd, { backgroundColor: COLORS.secondary }]} onPress={() => handleAddToList(setIngredients, ingInput, setIngInput)}>
             <Text style={styles.btnAddText}>+</Text>
           </Pressable>
         </View>
         {ingredients.map((ing, idx) => (
-            <View key={idx} style={styles.listItem}>
-                <Text style={styles.listText}>{idx + 1}. {ing}</Text>
+            <View key={idx} style={[styles.listItem, { backgroundColor: inputBg, borderColor }]}>
+                <Text style={[styles.listText, { color: textColor }]}>{idx + 1}. {ing}</Text>
                 <Pressable onPress={() => handleRemoveFromList(setIngredients, idx)}>
-                    <Text style={styles.removeText}>✕</Text>
+                    <Text style={[styles.removeText, { color: dangerColor }]}>✕</Text>
                 </Pressable>
             </View>
         ))}
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Pasos</Text>
+        <Text style={labelStyle}>Pasos</Text>
         <View style={styles.inputRow}>
           <TextInput 
-            style={[styles.input, { flex: 1 }]} 
+            style={[inputStyle, { flex: 1 }]} 
             value={instInput} 
             onChangeText={setInstInput} 
             placeholder="Agregar paso" 
+            placeholderTextColor={placeholderColor}
           />
-          <Pressable style={styles.btnAdd} onPress={() => handleAddToList(setInstructions, instInput, setInstInput)}>
+          <Pressable style={[styles.btnAdd, { backgroundColor: COLORS.secondary }]} onPress={() => handleAddToList(setInstructions, instInput, setInstInput)}>
             <Text style={styles.btnAddText}>+</Text>
           </Pressable>
         </View>
         {instructions.map((step, idx) => (
-            <View key={idx} style={styles.listItem}>
-                <Text style={styles.listText}>{idx + 1}. {step}</Text>
+            <View key={idx} style={[styles.listItem, { backgroundColor: inputBg, borderColor }]}>
+                <Text style={[styles.listText, { color: textColor }]}>{idx + 1}. {step}</Text>
                 <Pressable onPress={() => handleRemoveFromList(setInstructions, idx)}>
-                    <Text style={styles.removeText}>✕</Text>
+                    <Text style={[styles.removeText, { color: dangerColor }]}>✕</Text>
                 </Pressable>
             </View>
         ))}
       </View>
 
       <View style={styles.group}>
-        <Text style={styles.label}>Etiquetas</Text>
+        <Text style={labelStyle}>Etiquetas</Text>
         <View style={styles.inputRow}>
           <TextInput 
-            style={[styles.input, { flex: 1 }]} 
+            style={[inputStyle, { flex: 1 }]} 
             value={tagInput} 
             onChangeText={setTagInput} 
             placeholder="vegano, sin gluten..." 
+            placeholderTextColor={placeholderColor}
           />
-          <Pressable style={styles.btnAdd} onPress={() => handleAddToList(setRestrictions, tagInput, setTagInput)}>
+          <Pressable style={[styles.btnAdd, { backgroundColor: COLORS.secondary }]} onPress={() => handleAddToList(setRestrictions, tagInput, setTagInput)}>
             <Text style={styles.btnAddText}>+</Text>
           </Pressable>
         </View>
@@ -262,14 +287,14 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
         </View>
       </View>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={[styles.errorText, { color: dangerColor }]}>{error}</Text> : null}
 
       <View style={styles.actions}>
-        <Pressable style={[styles.btn, styles.btnPrimary]} onPress={handleSubmit}>
-            <Text style={styles.btnText}>{initial ? "Guardar cambios" : "Crear receta"}</Text>
+        <Pressable style={[styles.btn, styles.btnPrimary, { backgroundColor: btnPrimary }]} onPress={handleSubmit}>
+            <Text style={[styles.btnText, { color: btnText }]}>{initial ? "Guardar cambios" : "Crear receta"}</Text>
         </Pressable>
-        <Pressable style={[styles.btn, styles.btnOutline]} onPress={onCancel}>
-            <Text style={styles.btnOutlineText}>Cancelar</Text>
+        <Pressable style={[styles.btn, styles.btnOutline, { borderColor: textLightColor }]} onPress={onCancel}>
+            <Text style={[styles.btnOutlineText, { color: textLightColor }]}>Cancelar</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -279,7 +304,6 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.bg,
   },
   content: {
     padding: 16,
@@ -296,17 +320,13 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
     marginLeft: 4,
   },
   input: {
-    backgroundColor: COLORS.paper,
     borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: SIZES.radius,
     padding: 12,
     fontSize: 16,
-    color: COLORS.text,
   },
   textArea: {
     minHeight: 100,
@@ -317,7 +337,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   btnAdd: {
-    backgroundColor: COLORS.secondary,
     width: 48,
     justifyContent: 'center',
     alignItems: 'center',
@@ -332,19 +351,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: COLORS.paper,
     padding: 12,
     borderRadius: SIZES.radius,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   listText: {
     flex: 1,
     fontSize: 14,
-    color: COLORS.text,
   },
   removeText: {
-    color: COLORS.danger,
     fontSize: 18,
     fontWeight: 'bold',
     paddingHorizontal: 8,
@@ -358,19 +373,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.primary,
     backgroundColor: 'transparent',
     marginRight: 8,
   },
-  pillActive: {
-    backgroundColor: COLORS.primary,
-  },
   pillText: {
-    color: COLORS.primary,
     fontWeight: '600',
-  },
-  pillTextActive: {
-    color: '#fff',
   },
   categoryScroll: {
     marginTop: 8,
@@ -400,13 +407,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   errorText: {
-    color: COLORS.danger,
     textAlign: 'center',
     fontWeight: 'bold',
   },
   helperText: {
     fontSize: 12,
-    color: COLORS.textLight,
     marginTop: 4,
     marginLeft: 4,
   },
@@ -420,20 +425,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnPrimary: {
-    backgroundColor: COLORS.primary,
+    // Dynamic
   },
   btnOutline: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: COLORS.textLight,
   },
   btnText: {
-    color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
   },
   btnOutlineText: {
-    color: COLORS.textLight,
     fontWeight: '600',
     fontSize: 16,
   },
