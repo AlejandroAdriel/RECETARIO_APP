@@ -16,7 +16,6 @@ import Comments from "../../src/components/Comments";
 import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
 import { useThemeColor } from "../../hooks/useThemeColor";
 
-// Colores para los chips de restricciones (mismo criterio que en las tarjetas)
 const getTagColors = (tag) => {
   const key = (tag || "").toLowerCase().trim();
 
@@ -48,13 +47,7 @@ export default function RecipeDetail() {
   const headerBg = useThemeColor({}, "headerBackground");
   const headerText = useThemeColor({}, "headerText");
   const sectionTitleColor = useThemeColor({}, "sectionTitle");
-  const metaLabelColor = useThemeColor({}, "text"); // or muted
-  const metaValueColor = useThemeColor({}, "text");
-  const descriptionColor = useThemeColor({}, "text");
   const listTextColor = useThemeColor({}, "text");
-  const emptyTextColor = useThemeColor({}, "text");
-  const borderColor = useThemeColor({}, "borderColor");
-  const stepNumberColor = useThemeColor({}, "primary");
 
   useEffect(() => {
     (async () => {
@@ -110,7 +103,6 @@ export default function RecipeDetail() {
         contentContainerStyle={styles.screenContent}
       >
         <View style={[styles.card, { backgroundColor: cardBg }]}>
-          {/* Imagen */}
           <View style={styles.imageWrapper}>
             <Image
               source={{ uri: receta.image }}
@@ -120,44 +112,39 @@ export default function RecipeDetail() {
             />
           </View>
 
-          {/* Panel beige */}
           <View style={styles.body}>
-            {/* Título */}
             <View style={styles.titleRow}>
               <Text style={[styles.title, { color: textColor }]} numberOfLines={2}>
                 {receta.name}
               </Text>
             </View>
 
-            {/* Meta: duración, dificultad, tipo, porciones */}
             <View style={styles.metaGrid}>
               <View style={styles.metaColumn}>
-                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Duración</Text>
-                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.cookTime} min</Text>
+                <Text style={[styles.metaLabel, { color: textColor }]}>Duración</Text>
+                <Text style={[styles.metaValue, { color: textColor }]}>{receta.cookTime} min</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Dificultad</Text>
-                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.difficulty}</Text>
+                <Text style={[styles.metaLabel, { color: textColor }]}>Dificultad</Text>
+                <Text style={[styles.metaValue, { color: textColor }]}>{receta.difficulty}</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Tipo</Text>
-                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.category}</Text>
+                <Text style={[styles.metaLabel, { color: textColor }]}>Tipo</Text>
+                <Text style={[styles.metaValue, { color: textColor }]}>{receta.category}</Text>
               </View>
               <View style={styles.metaColumn}>
-                <Text style={[styles.metaLabel, { color: metaLabelColor }]}>Porciones</Text>
-                <Text style={[styles.metaValue, { color: metaValueColor }]}>{receta.servings}</Text>
+                <Text style={[styles.metaLabel, { color: textColor }]}>Porciones</Text>
+                <Text style={[styles.metaValue, { color: textColor }]}>{receta.servings}</Text>
               </View>
             </View>
 
-            {/* Descripción */}
             {receta.description ? (
               <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Descripción</Text>
-                <Text style={[styles.description, { color: descriptionColor }]}>{receta.description}</Text>
+                <Text style={[styles.description, { color: textColor }]}>{receta.description}</Text>
               </View>
             ) : null}
 
-            {/* Chips de restricciones */}
             {restrictions.length > 0 && (
               <View style={[styles.section, styles.tagsSection]}>
                 <Text style={[styles.sectionTitle, { marginBottom: 4, color: sectionTitleColor }]}>
@@ -187,7 +174,6 @@ export default function RecipeDetail() {
               </View>
             )}
 
-            {/* Ingredientes */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Ingredientes</Text>
               {Array.isArray(receta.ingredients) &&
@@ -201,13 +187,12 @@ export default function RecipeDetail() {
                   ))}
                 </View>
               ) : (
-                <Text style={[styles.emptyText, { color: emptyTextColor }]}>
+                <Text style={[styles.emptyText, { color: textColor }]}>
                   No se registraron ingredientes.
                 </Text>
               )}
             </View>
 
-            {/* Instrucciones */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: sectionTitleColor }]}>Instrucciones</Text>
               {Array.isArray(receta.instructions) &&
@@ -221,7 +206,7 @@ export default function RecipeDetail() {
                   ))}
                 </View>
               ) : (
-                <Text style={[styles.emptyText, { color: emptyTextColor }]}>
+                <Text style={[styles.emptyText, { color: textColor }]}>
                   No se registraron instrucciones.
                 </Text>
               )}
@@ -229,7 +214,6 @@ export default function RecipeDetail() {
           </View>
         </View>
 
-        {/* Comentarios (con espacio inferior extra para que no los tape el tab bar) */}
         <View style={styles.commentsWrapper}>
           <Comments recipeId={id} />
         </View>
