@@ -101,7 +101,7 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
     <View style={[styles.card, { backgroundColor: cardBg }]}>
       {/* Imagen + icono de favorito */}
       <View style={styles.imageWrapper}>
-        <Link href={`/receta/${receta.id}`} asChild>
+        <Link href={`/recipe/${receta.id}`} asChild>
           <Pressable>
             <Image
               source={{ uri: receta.image }}
@@ -122,7 +122,7 @@ export default function RecipeCard({ receta, isFav: initialFav, onFav }) {
 
       {/* Contenido */}
       <View style={styles.content}>
-        <Link href={`/receta/${receta.id}`} asChild>
+        <Link href={`/recipe/${receta.id}`} asChild>
           <Pressable>
             <Text style={[styles.title, { color: textColor }]} numberOfLines={1}>
               {receta.name}

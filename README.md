@@ -305,24 +305,6 @@ npx expo build:ios
 | `src/constants/theme.js` | Colores y estilos globales                           |
 | `src/services/api.js`    | Comunicación con backend                             |
 | `hooks/useThemeColor.js` | Hook para colores adaptativos                        |
-
-## 🐛 Troubleshooting
-
-### Error: "Cannot connect to backend"
-
-- Verifica que el backend esté corriendo
-- Asegúrate de usar la IP correcta en `api.js`
-- En Android, usa `http://10.0.2.2:3000` si usas emulador
-
-### Tema no cambia:
-
-- Verifica que uses `useThemeColor` para colores dinámicos
-- No uses colores hardcodeados de COLORS directamente en estilos
-
-### Las imágenes no cargan:
-
-- Verifica que la URL del backend sea accesible
-- Usa `expo-image` en lugar de `react-native` Image
 ---
 
 **Desarrollado con ❤️ usando Expo y React Native**
