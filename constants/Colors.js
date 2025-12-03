@@ -5,7 +5,7 @@ export default {
   light: {
     text: '#2C190A', // Coffee
     textLight: '#7A6957',
-    background: '#F5F7FA', // Light BG
+    background: '#123D5C', // Light BG
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
