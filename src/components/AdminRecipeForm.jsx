@@ -4,6 +4,7 @@ import { COLORS, SIZES } from "../constants/theme";
 import { AuthContext } from "../store/authContext";
 import { getRecipes } from "../services/api";
 import { useThemeColor } from "../../hooks/useThemeColor";
+import { Image } from "expo-image";
 
 const DIFFICULTIES = ["Fácil", "Intermedio", "Difícil"];
 
@@ -142,6 +143,17 @@ export default function AdminRecipeForm({ initial = null, onSubmit, onCancel }) 
             placeholderTextColor={placeholderColor}
         />
         <Text style={[styles.helperText, { color: textLightColor }]}>Dejar vacío para usar la imagen por defecto basada en el ID.</Text>
+        
+        {image ? (
+          <View style={styles.previewContainer}>
+            <Image 
+              source={{ uri: image.startsWith("http") || image.startsWith("/") ? image : `/assets/images/recipes/${image}` }} 
+              style={styles.previewImage} 
+              contentFit="cover"
+              transition={200}
+            />
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.row}>
@@ -434,5 +446,18 @@ const styles = StyleSheet.create({
   btnOutlineText: {
     fontWeight: '600',
     fontSize: 16,
+  },
+  previewContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+    borderRadius: SIZES.radius,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  previewImage: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#f0f0f0',
   },
 });
