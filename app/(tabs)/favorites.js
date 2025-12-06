@@ -14,6 +14,7 @@ import { getUserFavorites } from "../../src/services/api";
 import RecipeCard from "../../src/components/RecipeCard";
 import { COLORS } from "../../src/constants/theme";
 import { useThemeColor } from "../../hooks/useThemeColor";
+import { useTheme } from "../../src/store/themeContext";
 
 export default function Favorites() {
   const { user } = useContext(AuthContext);
@@ -24,8 +25,10 @@ export default function Favorites() {
   const { width } = useWindowDimensions();
   const numColumns = width > 600 ? 3 : 1;
 
+  const { theme } = useTheme();
   const backgroundColor = useThemeColor({}, "background");
-  const textColor = useThemeColor({}, "text");
+  const defaultTextColor = useThemeColor({}, "text");
+  const textColor = theme === 'light' ? '#FFFFFF' : defaultTextColor;
   const sectionTitleColor = useThemeColor({}, "text");
   const emptyTextColor = useThemeColor({}, "text");
 

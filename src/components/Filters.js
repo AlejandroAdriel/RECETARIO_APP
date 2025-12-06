@@ -12,6 +12,8 @@ const DIFF = ["fácil", "intermedio", "difícil"];
 const TYPES = ["Desayuno", "Almuerzo", "Cena", "Snack"];
 const RESTR = ["vegetariano", "sin lacteos", "sin gluten"];
 
+import { useTheme } from "../store/themeContext";
+
 export default function Filters({ value = {}, onChange, availableCategories = [], availableRestrictions = [] }) {
   const v = {
     time: value.time || [],
@@ -20,13 +22,17 @@ export default function Filters({ value = {}, onChange, availableCategories = []
     restrictions: value.restrictions?.map(r => r.toLowerCase()) || [],
   };
 
+  const { theme } = useTheme();
   const titleColor = useThemeColor({}, "text");
   const sectionTitleColor = useThemeColor({}, "text");
   const chipBg = useThemeColor({}, "background");
   const chipBorder = useThemeColor({}, "borderColor");
-  const chipText = useThemeColor({}, "text");
+  
+  const defaultChipText = useThemeColor({}, "text");
+  const chipText = theme === 'light' ? '#FFFFFF' : defaultChipText;
   const activeChipBg = useThemeColor({}, "tint");
-  const activeChipText = useThemeColor({}, "background"); // Usually white or black depending on tint
+  const defaultActiveChipText = useThemeColor({}, "background");
+  const activeChipText = theme === 'light' ? '#FFFFFF' : defaultActiveChipText;
   const clearColor = useThemeColor({}, "tint");
 
   const toggle = (group, key) => {

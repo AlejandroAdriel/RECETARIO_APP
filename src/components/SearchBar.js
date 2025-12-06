@@ -5,6 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/theme";
 import { useThemeColor } from "../../hooks/useThemeColor";
 
+import { useTheme } from "../store/themeContext";
+
 export default function SearchBar({
   value,
   onChange,
@@ -14,11 +16,13 @@ export default function SearchBar({
 }) {
   const [local, setLocal] = useState(value || "");
 
+  const { theme } = useTheme();
   const containerBg = useThemeColor({}, "cardBackground");
   const textColor = useThemeColor({}, "text");
   const iconColor = useThemeColor({}, "text"); // Or muted
   const filterBtnBg = useThemeColor({}, "tint");
-  const filterIconColor = useThemeColor({}, "background");
+  const defaultFilterIconColor = useThemeColor({}, "background");
+  const filterIconColor = theme === 'light' ? '#FFFFFF' : defaultFilterIconColor;
 
   const handleSubmit = () => {
     onSubmit?.(local);
@@ -55,7 +59,7 @@ export default function SearchBar({
           <Ionicons
             name="options-outline"
             size={20}
-            color={filterIconColor} // ICONO BEIGE
+            color={filterIconColor}
           />
         </Pressable>
       </View>
