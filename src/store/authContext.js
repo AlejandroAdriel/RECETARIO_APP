@@ -135,6 +135,19 @@ export function AuthProvider({ children }) {
     });
   }, []);
 
+  const updateUser = useCallback((updates) => {
+    setSession((prev) => {
+      if (!prev || !prev.user) return prev;
+      return {
+        ...prev,
+        user: {
+          ...prev.user,
+          ...updates,
+        },
+      };
+    });
+  }, []);
+
   const value = useMemo(
     () => ({
       user: session?.user || null,
@@ -145,8 +158,9 @@ export function AuthProvider({ children }) {
       register,
       logout,
       setRole,
+      updateUser,
     }),
-    [session, loading, login, register, logout, setRole]
+    [session, loading, login, register, logout, setRole, updateUser]
   );
 
   return (

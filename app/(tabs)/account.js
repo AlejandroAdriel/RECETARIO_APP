@@ -17,10 +17,12 @@ import { AuthContext } from "../../src/store/authContext";
 import { useTheme } from "../../src/store/themeContext";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { COLORS, SIZES, SHADOWS } from "../../src/constants/theme";
+import { AVATARS, AVATAR_LIST } from "../../src/constants/avatars";
+import { Image, Modal } from "react-native";
 
 export default function Account() {
   const router = useRouter();
-  const { user, login, register, logout, isLoading } = useContext(AuthContext);
+  const { user, login, register, logout, isLoading, updateUser } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const [mode, setMode] = useState("login");
 
@@ -47,6 +49,13 @@ export default function Account() {
   const [rShowPass, setRShowPass] = useState(false);
   const [rUsername, setRUsername] = useState("");
   const [rLoading, setRLoading] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleAvatarSelect = (avatarKey) => {
+    updateUser({ avatarUrl: avatarKey });
+    setModalVisible(false);
+  };
 
   const handleLogin = async () => {
     if (!lEmail || !lPassword)
@@ -101,14 +110,66 @@ export default function Account() {
           {user ? (
             <View style={[styles.panel, { backgroundColor: cardBg }]}>
               <View style={styles.avatarContainer}>
-                <View style={[styles.avatar, { backgroundColor: btnPrimary }]}>
-                  <Text style={[styles.avatarText, { color: btnText }]}>
-                    {user.username?.[0]?.toUpperCase()}
-                  </Text>
-                </View>
+                <Pressable onPress={() => setModalVisible(true)}>
+                  {user.avatarUrl && AVATARS[user.avatarUrl] ? (
+                    <Image source={AVATARS[user.avatarUrl]} style={styles.avatarImage} />
+                  ) : (
+                    <View style={[styles.avatar, { backgroundColor: btnPrimary }]}>
+                      <Text style={[styles.avatarText, { color: btnText }]}>
+                        {user.username?.[0]?.toUpperCase()}
+                      </Text>
+                    </View>
+                  )}
+                  <View style={styles.editIconBadge}>
+                    <Ionicons name="pencil" size={12} color="#fff" />
+                  </View>
+                </Pressable>
                 <Text style={[styles.username, { color: textColor }]}>{user.username}</Text>
                 <Text style={[styles.role, { color: textLightColor }]}>{user.role}</Text>
               </View>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={[styles.modalContent, { backgroundColor: cardBg }]}>
+                    <Text style={[styles.modalTitle, { color: textColor }]}>Elige tu avatar</Text>
+                    
+                    <ScrollView contentContainerStyle={styles.avatarGrid}>
+                      <Pressable 
+                        style={[styles.avatarOption, !user.avatarUrl && styles.selectedAvatar, { borderColor: btnPrimary }]}
+                        onPress={() => handleAvatarSelect(null)}
+                      >
+                        <View style={[styles.avatarPlaceholder, { backgroundColor: btnPrimary }]}>
+                          <Text style={[styles.avatarPlaceholderText, { color: btnText }]}>
+                            {user.username?.[0]?.toUpperCase()}
+                          </Text>
+                        </View>
+                      </Pressable>
+
+                      {AVATAR_LIST.map((key) => (
+                        <Pressable
+                          key={key}
+                          style={[styles.avatarOption, user.avatarUrl === key && styles.selectedAvatar, { borderColor: btnPrimary }]}
+                          onPress={() => handleAvatarSelect(key)}
+                        >
+                          <Image source={AVATARS[key]} style={styles.avatarOptionImage} />
+                        </Pressable>
+                      ))}
+                    </ScrollView>
+
+                    <Pressable
+                      style={[styles.closeBtn, { backgroundColor: btnPrimary }]}
+                      onPress={() => setModalVisible(false)}
+                    >
+                      <Text style={[styles.btnText, { color: btnText }]}>Cerrar</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
 
               <View style={[styles.infoSection, { borderColor }]}>
                 <View style={styles.row}>
@@ -462,5 +523,83 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  editIconBadge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: COLORS.primary,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: "60%",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  avatarGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 16,
+    paddingBottom: 20,
+  },
+  avatarOption: {
+    alignItems: "center",
+    padding: 4,
+    borderRadius: 44,
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  selectedAvatar: {
+    // borderColor is set dynamically
+  },
+  avatarOptionImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  avatarPlaceholder: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarPlaceholderText: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  avatarLabel: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  closeBtn: {
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: "center",
+    marginTop: 10,
   },
 });
