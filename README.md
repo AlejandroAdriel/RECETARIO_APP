@@ -13,151 +13,152 @@
 
 ## 💡 Resumen del Proyecto
 
-**Super Recetario** es la herramienta definitiva para la cocina moderna. Desarrollada con la potencia de **React Native** y **Expo**, esta aplicación combina un diseño elegante con un rendimiento excepcional. Descubre nuevas ideas, organiza tus platos favoritos y cocina paso a paso con una interfaz fluida e intuitiva. Pensada para quienes buscan rapidez y estilo, Super Recetario convierte tu dispositivo en el mejor asistente de cocina.
+**Super Recetario** es una aplicación móvil nativa desarrollada con **React Native** y **Expo (SDK 54)**. Diseñada para organizar y descubrir recetas, ofrece una experiencia de usuario fluida con soporte para temas (Claro/Oscuro), autenticación segura y un sistema robusto de búsqueda y filtrado.
 
 ---
 
 ## 📑 Índice
 
+- [Funcionalidades](#-funcionalidades)
 - [Arquitectura Técnica](#-arquitectura-técnica)
-- [Funcionalidades Detalladas](#-funcionalidades-detalladas)
 - [Sistema de Diseño](#-sistema-de-diseño)
 - [Guía de Instalación](#-guía-de-instalación)
-- [Estructura del Código](#-estructura-del-código)
+- [Generación de APK (Android)](#-generación-de-apk-android)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+
+---
+
+## 🚀 Funcionalidades
+
+La aplicación cuenta con las siguientes funcionalidades:
+
+### 1. 🏠 Feed de Recetas (Home)
+
+Ubicación: `app/(tabs)/index.js`
+
+- **Grid Adaptativo**: Utiliza `useWindowDimensions` para mostrar 2 o 3 columnas según el ancho del dispositivo.
+- **Búsqueda Avanzada**: Barra de búsqueda integrada (`SearchBar`) para filtrar por nombre o ingredientes.
+- **Filtros Compuestos**: Panel de filtros (`Filters.js`) que permite refinar por:
+  - Tiempo de cocina (15-30, 30-45 mins, etc.)
+  - Dificultad (Fácil, Media, Difícil)
+  - Tipo de plato
+  - Restricciones alimentarias
+
+### 2. 🔐 Autenticación y Seguridad
+
+Ubicación: `src/store/authContext.js`
+
+- **Registro y Login**: Flujos completos conectados a una API REST.
+- **Persistencia Segura**: Utiliza `expo-secure-store` para guardar el token de sesión (`recetario_session_v1`) y datos del usuario de forma encriptada.
+- **Roles**: Soporte para roles de usuario (`admin` vs `user`).
+
+### 3. ⭐ Sistema de Favoritos
+
+Ubicación: `app/(tabs)/favorites.js`
+
+- **Gestión Local**: Permite marcar/desmarcar recetas como favoritas.
+- **Integración Global**: El estado de favorito se sincroniza en tiempo real entre el Home y la tarjeta de detalle (`RecipeCard`).
+
+### 4. 💬 Comentarios
+
+Ubicación: `src/components/Comments.js`
+
+- **Interacción Social**: Los usuarios autenticados pueden leer y publicar comentarios en las recetas.
+
+### 5. ⚙️ Panel de Administración
+
+Ubicación: `app/admin`
+
+- Funcionalidad dedicada para usuarios con rol `admin` para la gestión de contenido.
 
 ---
 
 ## 🏗️ Arquitectura Técnica
 
-El proyecto sigue una arquitectura modular y escalable, diseñada para facilitar el mantenimiento y la expansión futura.
+### Stack Principal
 
-### Stack (Core Stack)
+- **Framework**: Expo SDK 54 (`~54.0.27`).
+- **Navegación**: [Expo Router v6](https://docs.expo.dev/router/introduction/) (Routing basado en archivos).
+- **Componentes**: React Native 0.81.
+- **HTTP Client**: `fetch` nativo encapsulado en `src/services/api.js`.
 
-- **Runtime**: [React Native](https://reactnative.dev/) (0.81) - Para una experiencia nativa real a 60fps.
-- **Framework**: [Expo](https://expo.dev/) (SDK 54) - Facilita el acceso a APIs nativas y el despliegue.
-- **Enrutamiento**: [Expo Router v3](https://docs.expo.dev/router/introduction/) - Implementa una navegación basada en el sistema de archivos (File-based routing), similar a Next.js, permitiendo deep linking automático y una estructura de navegación intuitiva.
+### Gestión de Estado (`src/store`)
 
-### Gestión de Estado (State Management)
-
-Utilizamos **React Context API** para un manejo de estado global ligero y eficiente, evitando la sobreingeniería de librerías externas para este caso de uso:
-
-- **`AuthContext`**: Gestiona el ciclo de vida de la sesión del usuario, persistencia de tokens (vía `SecureStore`) y control de acceso basado en roles (RBAC).
-- **`ThemeContext`**: Controla el sistema de temas dinámico, persistiendo las preferencias del usuario.
-
-### Capa de Servicios (Service Layer)
-
-La comunicación con el backend está desacoplada de la UI a través de una capa de servicios en `src/services/api.js`. Esto permite:
-
-- **Abstracción**: Los componentes no conocen los detalles de la implementación HTTP.
-- **Reusabilidad**: Los métodos de la API pueden ser reutilizados en diferentes partes de la app.
-- **Manejo de Errores Centralizado**: Intercepción y transformación de errores de red.
-
----
-
-## 🚀 Funcionalidades Detalladas
-
-### 1. Exploración y Descubrimiento
-
-El _Home Feed_ utiliza un algoritmo de renderizado condicional para adaptar el layout:
-
-- **Grid Dinámico**: Detecta el ancho del dispositivo (`useWindowDimensions`) para alternar entre una vista de lista (móvil) y un grid de 3 columnas (tablet/desktop).
-- **Lazy Loading**: Las imágenes se cargan de manera diferida y optimizada usando `expo-image` para reducir el consumo de ancho de banda y memoria.
-
-### 2. Motor de Búsqueda y Filtrado
-
-Implementamos un sistema de filtrado en cliente de alto rendimiento:
-
-- **Búsqueda en Tiempo Real**: Filtrado instantáneo por nombre e ingredientes.
-- **Filtros Compuestos**: Permite la intersección de múltiples criterios (Categoría + Dificultad + Restricciones + Tiempo) simultáneamente.
-
-### 3. Sistema de Recetas (Core)
-
-- **Visualización Rica**: Renderizado de listas de ingredientes y pasos con estilos tipográficos jerárquicos.
-- **Interoperabilidad RDF**: Capacidad única de exportar recetas en formato **RDF (Resource Description Framework)**, facilitando la integración con la web semántica y otros sistemas de datos estructurados.
-
-### 4. Seguridad y Usuarios
-
-- **Autenticación Robusta**: Flujos de Login y Registro validados.
-- **Persistencia Segura**: Los tokens de sesión se almacenan en el **SecureStore** del dispositivo (Keychain en iOS, Keystore en Android), garantizando que los datos sensibles estén protegidos.
-
-### 5. Panel de Administración
-
-Un módulo exclusivo para usuarios con rol `admin`:
-
-- **CRUD Completo**: Creación, lectura, actualización y eliminación de recetas.
-- **Gestión de Listas Dinámicas**: Interfaz optimizada para añadir/eliminar ingredientes y pasos dinámicamente.
+- **`AuthContext`**: Gestiona el ciclo de vida de la sesión (Login/Logout/Validación).
+- **`ThemeContext`**: Controla el cambio entre modo Claro y Oscuro.
 
 ---
 
 ## 🎨 Sistema de Diseño
 
-La interfaz de usuario se adhiere a principios de diseño moderno, implementados a través de un sistema de temas personalizado (`src/constants/theme.js`).
+El diseño se maneja a través de tokens semánticos definidos en `src/constants/Colors.js` y consumidos vía `useThemeColor`.
 
-- **Tipografía**: Escala tipográfica consistente para asegurar legibilidad.
-- **Paleta de Colores Semántica**:
-  - Colores definidos por función (ej. `background`, `cardBackground`, `text`, `primary`) en lugar de valores absolutos.
-  - **Modo Oscuro Nativo**: Todos los componentes reaccionan automáticamente al cambio de tema del sistema o a la preferencia manual del usuario.
-- **Feedback Visual**: Uso de `Pressable` con estados de opacidad y micro-interacciones para confirmar acciones del usuario.
+- **Modo Oscuro/Claro**: La app responde automáticamente a la configuración del sistema.
+- **Componentes Clave**:
+  - `RecipeCard`: Componente visual principal con soporte de imágenes y badge de favoritos.
+  - `SearchBar`: Input estilizado con botones de acción.
+  - `Comments`: Lista optimizada para lectura.
+
+---
+
+## 📱 Generación de APK (Android)
+
+Comando verificado en `package.json` y logs de construcción:
+
+1.  **Instalar EAS CLI**:
+    ```bash
+    npm install -g eas-cli
+    ```
+2.  **Compilar**:
+    ```bash
+    npx eas-cli build -p android --profile apk
+    ```
 
 ---
 
 ## 💻 Guía de Instalación
 
-### Prerrequisitos
-
-- Node.js (LTS)
-- Gestor de paquetes (npm o yarn)
-- Dispositivo móvil con **Expo Go** o Emulador (Android Studio / Xcode)
-
-### Pasos
-
-1.  **Clonar el Repositorio**
+1.  **Clonar**:
 
     ```bash
     git clone https://github.com/AlejandroAdriel/RECETARIO_APP
-    cd RECETARIO_APP
+    cd SuperRecetario/App
     ```
 
-2.  **Instalar Dependencias**
+2.  **Instalar**:
 
     ```bash
     npm install
+    # Si hay advertencias de peer dependencies:
+    npx expo install --fix
     ```
 
-3.  **Configuración de Entorno**
-
-    - Verifica `src/services/api.js` para apuntar a tu servidor backend local o de producción.
-
-4.  **Ejecución**
+3.  **Ejecutar**:
     ```bash
     npx expo start
     ```
-    - Presiona `a` para Android.
-    - Presiona `i` para iOS.
-    - Presiona `w` para Web.
 
 ---
 
-## 📂 Estructura del Código
+## 📂 Estructura del Proyecto
 
-Una estructura de carpetas semántica que separa responsabilidades claramente:
+Estructura validada:
 
 ```text
 App/
-├── app/                    # (Presentation Layer) Rutas y Pantallas
-│   ├── (tabs)/             # Navegación principal (Tabs)
-│   ├── admin/              # Módulo de administración
-│   ├── recipe/             # Módulo de recetas
-│   └── _layout.js          # Configuración de navegación global
+├── app/                    # Rutas (Screens)
+│   ├── (tabs)/             # [index, favorites, account]
+│   ├── admin/              # Panel Admin
+│   ├── recipe/             # [id].js (Detalle)
+│   └── _layout.js          # Configuración de Stack
 │
-├── src/                    # (Logic & UI Layer)
-│   ├── components/         # Componentes UI puros y reutilizables
-│   ├── constants/          # Tokens de diseño y configuración
-│   ├── hooks/              # Lógica de negocio encapsulada (Custom Hooks)
-│   ├── services/           # Comunicación externa (API)
-│   └── store/              # Estado global (Contexts)
+├── src/
+│   ├── components/         # [RecipeCard, SearchBar, Comments, Filters]
+│   ├── constants/          # [Colors, avatars, theme]
+│   ├── context/            # (No existe, movido a store)
+│   ├── hooks/              # [useThemeColor]
+│   ├── services/           # [api.js]
+│   └── store/              # [authContext, themeContext]
 │
 └── assets/                 # Recursos estáticos
 ```
-
----
