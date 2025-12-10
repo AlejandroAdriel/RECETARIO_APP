@@ -1,4 +1,4 @@
-# 🍳 Super Recetario
+# Super Recetario
 
 <div align="center">
 
@@ -11,28 +11,28 @@
 
 ---
 
-## 💡 Resumen del Proyecto
+## Resumen del Proyecto
 
 **Super Recetario** es una aplicación móvil nativa desarrollada con **React Native** y **Expo (SDK 54)**. Diseñada para organizar y descubrir recetas, ofrece una experiencia de usuario fluida con soporte para temas (Claro/Oscuro), autenticación segura y un sistema robusto de búsqueda y filtrado.
 
 ---
 
-## 📑 Índice
+## Índice
 
-- [Funcionalidades](#-funcionalidades)
-- [Arquitectura Técnica](#-arquitectura-técnica)
-- [Sistema de Diseño](#-sistema-de-diseño)
-- [Guía de Instalación](#-guía-de-instalación)
-- [Generación de APK (Android)](#-generación-de-apk-android)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Funcionalidades](#funcionalidades)
+- [Arquitectura Técnica](#arquitectura-técnica)
+- [Sistema de Diseño](#sistema-de-diseño)
+- [Guía de Instalación](#guía-de-instalación)
+- [Generación de APK (Android)](#generación-de-apk-android)
+- [Estructura del Proyecto](#estructura-del-proyecto)
 
 ---
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 La aplicación cuenta con las siguientes funcionalidades:
 
-### 1. 🏠 Feed de Recetas (Home)
+### 1. Feed de Recetas (Home)
 
 Ubicación: `app/(tabs)/index.js`
 
@@ -44,7 +44,7 @@ Ubicación: `app/(tabs)/index.js`
   - Tipo de plato
   - Restricciones alimentarias
 
-### 2. 🔐 Autenticación y Seguridad
+### 2. Autenticación y Seguridad
 
 Ubicación: `src/store/authContext.js`
 
@@ -52,20 +52,20 @@ Ubicación: `src/store/authContext.js`
 - **Persistencia Segura**: Utiliza `expo-secure-store` para guardar el token de sesión (`recetario_session_v1`) y datos del usuario de forma encriptada.
 - **Roles**: Soporte para roles de usuario (`admin` vs `user`).
 
-### 3. ⭐ Sistema de Favoritos
+### 3. Sistema de Favoritos
 
 Ubicación: `app/(tabs)/favorites.js`
 
 - **Gestión Local**: Permite marcar/desmarcar recetas como favoritas.
 - **Integración Global**: El estado de favorito se sincroniza en tiempo real entre el Home y la tarjeta de detalle (`RecipeCard`).
 
-### 4. 💬 Comentarios
+### 4. Comentarios
 
 Ubicación: `src/components/Comments.js`
 
 - **Interacción Social**: Los usuarios autenticados pueden leer y publicar comentarios en las recetas.
 
-### 5. ⚙️ Panel de Administración
+### 5. Panel de Administración
 
 Ubicación: `app/admin`
 
@@ -73,7 +73,7 @@ Ubicación: `app/admin`
 
 ---
 
-## 🏗️ Arquitectura Técnica
+## Arquitectura Técnica
 
 ### Stack Principal
 
@@ -89,7 +89,7 @@ Ubicación: `app/admin`
 
 ---
 
-## 🎨 Sistema de Diseño
+## Sistema de Diseño
 
 El diseño se maneja a través de tokens semánticos definidos en `src/constants/Colors.js` y consumidos vía `useThemeColor`.
 
@@ -101,7 +101,7 @@ El diseño se maneja a través de tokens semánticos definidos en `src/constants
 
 ---
 
-## 📱 Generación de APK (Android)
+## Generación de APK (Android)
 
 Comando verificado en `package.json` y logs de construcción:
 
@@ -116,7 +116,7 @@ Comando verificado en `package.json` y logs de construcción:
 
 ---
 
-## 💻 Guía de Instalación
+## Guía de Instalación
 
 1.  **Clonar**:
 
@@ -140,7 +140,7 @@ Comando verificado en `package.json` y logs de construcción:
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 Estructura validada:
 
