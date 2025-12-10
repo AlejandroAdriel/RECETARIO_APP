@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Super Recetario",
-    "slug": "super-recetario",
+    "slug": "App",
     "version": "1.0.0",
     "scheme": "superrecetario",
     "orientation": "portrait",
