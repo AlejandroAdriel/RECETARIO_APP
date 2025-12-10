@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#123D5C"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.superrecetario.app"
@@ -32,6 +32,9 @@
       }
     },
     "owner": "alejandroadriel",
-    "plugins": []
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ]
   }
 }

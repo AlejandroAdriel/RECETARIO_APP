@@ -14,7 +14,7 @@ export default {
     headerBackground: '#E4C9A2', // Honey
     headerText: '#2C190A',
     sectionTitle: '#123D5C',
-    inputBackground: '#F3E1C4', // Same as card/paper
+    inputBackground: '#E5D0B1', // Darker than card for contrast
     placeholderText: '#7A6957',
     buttonPrimary: '#8BA75A', // Accent
     buttonText: '#FFFFFF',

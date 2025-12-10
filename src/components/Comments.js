@@ -18,13 +18,13 @@ export default function Comments({ recipeId }) {
   const containerBg = useThemeColor({}, "cardBackground");
   const headerColor = useThemeColor({}, "text");
   const labelColor = useThemeColor({}, "text");
-  const inputBg = useThemeColor({}, "background");
+  const inputBg = useThemeColor({}, "inputBackground");
   const inputBorder = useThemeColor({}, "borderColor");
   const textColor = useThemeColor({}, "text");
   const placeholderColor = useThemeColor({}, "text"); // or muted
   const btnBg = useThemeColor({}, "tint");
-  const btnText = useThemeColor({}, "background");
-  const commentItemBg = useThemeColor({}, "background");
+  const btnText = useThemeColor({}, "buttonText");
+  const commentItemBg = useThemeColor({}, "inputBackground");
   const commentBorder = useThemeColor({}, "borderColor");
   const authorColor = useThemeColor({}, "text");
   const contentColor = useThemeColor({}, "text");

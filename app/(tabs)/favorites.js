@@ -29,7 +29,8 @@ export default function Favorites() {
   const backgroundColor = useThemeColor({}, "background");
   const defaultTextColor = useThemeColor({}, "text");
   const textColor = theme === 'light' ? '#FFFFFF' : defaultTextColor;
-  const sectionTitleColor = useThemeColor({}, "text");
+  const defaultSectionTitleColor = useThemeColor({}, "text");
+  const sectionTitleColor = theme === 'light' ? '#FFFFFF' : defaultSectionTitleColor;
   const emptyTextColor = useThemeColor({}, "text");
 
   const headerBg = useThemeColor({}, "headerBackground");
