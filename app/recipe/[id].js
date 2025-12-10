@@ -225,7 +225,6 @@ export default function RecipeDetail() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    // backgroundColor: COLORS.seaBlue, // Removed static color
   },
   screen: {
     flex: 1,
@@ -276,7 +275,6 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    // backgroundColor: COLORS.paper, // Removed static color
     borderRadius: SIZES.radiusLg,
     overflow: "hidden",
     ...SHADOWS.default,
@@ -303,7 +301,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 22,
     fontWeight: "700",
-    // color: COLORS.coffee, // Removed static color
   },
 
   metaGrid: {
@@ -321,12 +318,10 @@ const styles = StyleSheet.create({
   },
   metaLabel: {
     fontSize: 12,
-    // color: COLORS.muted, // Removed static color
   },
   metaValue: {
     fontSize: 14,
     fontWeight: "600",
-    // color: COLORS.ink, // Removed static color
   },
 
   section: {
@@ -335,17 +330,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: "700",
-    // color: COLORS.coffee, // Removed static color
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
     lineHeight: 20,
-    // color: COLORS.ink, // Removed static color
   },
   emptyText: {
     fontSize: 13,
-    // color: COLORS.muted, // Removed static color
     fontStyle: "italic",
   },
 
@@ -376,7 +368,6 @@ const styles = StyleSheet.create({
     color: COLORS.ink,
   },
 
-  // Chips de restricciones
   tagsSection: {
     marginBottom: 20,
   },

@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 18,
     borderRadius: 22,
-    alignSelf: "center",                 // centrado horizontal
-    width: "94%",                         // más suave visualmente
+    alignSelf: "center",                
+    width: "94%",                        
     marginTop: 10,
     marginBottom: 18,
 

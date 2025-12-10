@@ -177,7 +177,7 @@ export default function Account() {
                   <Text style={[styles.value, { color: textColor }]}>{user.email}</Text>
                 </View>
                 
-                {/* Theme Toggle */}
+                {}
                 <View style={styles.row}>
                   <Text style={[styles.label, { color: textLightColor }]}>Modo Oscuro</Text>
                   <Switch 
@@ -574,7 +574,6 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   selectedAvatar: {
-    // borderColor is set dynamically
   },
   avatarOptionImage: {
     width: 70,

@@ -1,41 +1,41 @@
-const tintColorLight = '#123D5C'; // Sea Blue
-const tintColorDark = '#E4C9A2'; // Honey
+const tintColorLight = '#123D5C'; 
+const tintColorDark = '#E4C9A2'; 
 
 export default {
   light: {
-    text: '#2C190A', // Coffee
+    text: '#2C190A', 
     textLight: '#7A6957',
-    background: '#123D5C', // Light BG
+    background: '#123D5C', 
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
-    cardBackground: '#F3E1C4', // Paper
+    cardBackground: '#F3E1C4', 
     borderColor: '#D2BFA5',
-    headerBackground: '#E4C9A2', // Honey
+    headerBackground: '#E4C9A2', 
     headerText: '#2C190A',
     sectionTitle: '#123D5C',
-    inputBackground: '#E5D0B1', // Darker than card for contrast
+    inputBackground: '#E5D0B1', 
     placeholderText: '#7A6957',
-    buttonPrimary: '#8BA75A', // Accent
+    buttonPrimary: '#8BA75A', 
     buttonText: '#FFFFFF',
     danger: '#C0392B',
   },
   dark: {
-    text: '#E0E0E0', // Off-white
+    text: '#E0E0E0', 
     textLight: '#A0A0A0',
-    background: '#121212', // Softer Black
+    background: '#121212', 
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
-    cardBackground: '#1E1E1E', // Dark Card
+    cardBackground: '#1E1E1E', 
     borderColor: '#333333',
-    headerBackground: '#1E1E1E', // Match card/surface
-    headerText: '#E4C9A2', // Honey
-    sectionTitle: '#E4C9A2', // Honey
+    headerBackground: '#1E1E1E', 
+    headerText: '#E4C9A2', 
+    sectionTitle: '#E4C9A2', 
     inputBackground: '#2C2C2C',
     placeholderText: '#666666',
-    buttonPrimary: '#8BA75A', // Keep accent
+    buttonPrimary: '#8BA75A', 
     buttonText: '#FFFFFF',
-    danger: '#CF6679', // Softer red for dark mode
+    danger: '#CF6679', 
   },
 };

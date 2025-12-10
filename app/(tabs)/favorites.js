@@ -77,7 +77,7 @@ export default function Favorites() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      {/* Usamos nuestro propio header visual, ocultamos el nativo */}
+      {}
       <Stack.Screen options={{ headerShown: false }} />
 
       <FlatList
