@@ -9,7 +9,7 @@ export const AVATARS = {
   avatar_08: require("../../assets/avatars/avatar_08.png"),
   avatar_09: require("../../assets/avatars/avatar_09.png"),
   avatar_10: require("../../assets/avatars/avatar_10.png"),
-  avatar_11: require("../../assets/avatars/avatar_11.png"),
+
 };
 
 export const AVATAR_LIST = [
@@ -23,5 +23,5 @@ export const AVATAR_LIST = [
   "avatar_08",
   "avatar_09",
   "avatar_10",
-  "avatar_11",
+
 ];
